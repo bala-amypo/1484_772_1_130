@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.FraudRule;
 import com.example.demo.service.FraudRuleService;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +17,7 @@ public class FraudRuleController {
     }
 
     @PostMapping
-    public FraudRule createRule(@RequestBody FraudRule rule) {
+    public FraudRule createRule(@Valid @RequestBody FraudRule rule) {
         return service.createRule(rule);
     }
 

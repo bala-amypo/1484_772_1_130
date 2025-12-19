@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.StolenDevice;
 import com.example.demo.service.StolenDeviceService;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +18,7 @@ public class StolenDeviceController {
 
     @PostMapping
     public StolenDevice reportStolen(
-            @RequestBody StolenDevice device) {
+            @Valid @RequestBody StolenDevice device) {
         return service.reportStolen(device);
     }
 

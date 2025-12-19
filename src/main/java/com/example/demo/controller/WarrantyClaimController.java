@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.model.WarrantyClaimRecord;
 import com.example.demo.service.WarrantyClaimService;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +18,7 @@ public class WarrantyClaimController {
 
     @PostMapping
     public WarrantyClaimRecord submitClaim(
-            @RequestBody WarrantyClaimRecord claim) {
+            @Valid @RequestBody WarrantyClaimRecord claim) {
         return service.submitClaim(claim);
     }
 

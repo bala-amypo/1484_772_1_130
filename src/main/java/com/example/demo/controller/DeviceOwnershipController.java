@@ -18,7 +18,7 @@ public class DeviceOwnershipController {
 
     @PostMapping
     public DeviceOwnershipRecord registerDevice(
-            @RequestBody DeviceOwnershipRecord device) {
+            @Valid @RequestBody DeviceOwnershipRecord device) {
         return service.registerDevice(device);
     }
 
