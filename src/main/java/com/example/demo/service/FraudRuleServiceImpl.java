@@ -6,7 +6,7 @@ import com.example.demo.service.FraudRuleService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class FraudRuleServiceImpl implements FraudRuleService {
 
     private final FraudRuleRepository repository;

@@ -6,7 +6,7 @@ import com.example.demo.service.FraudAlertService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class FraudAlertServiceImpl implements FraudAlertService {
 
     private final FraudAlertRecordRepository repository;

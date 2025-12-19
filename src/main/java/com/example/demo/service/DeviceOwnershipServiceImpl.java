@@ -6,7 +6,7 @@ import com.example.demo.service.DeviceOwnershipService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
 
     private final DeviceOwnershipRecordRepository repository;

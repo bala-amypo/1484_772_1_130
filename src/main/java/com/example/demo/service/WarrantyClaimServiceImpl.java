@@ -10,7 +10,7 @@ import com.example.demo.service.WarrantyClaimService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     private final WarrantyClaimRecordRepository claimRepo;
