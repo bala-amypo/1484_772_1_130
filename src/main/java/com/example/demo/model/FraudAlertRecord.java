@@ -52,11 +52,17 @@ public class FraudAlertRecord {
         this.resolved = resolved;
     }
 
-    // ✅ BACKWARD COMPATIBILITY (services expect this)
+    // ✅ BACKWARD COMPATIBILITY
     public void setClaimId(Long claimId) {
         if (this.claim == null) {
             this.claim = new WarrantyClaimRecord();
         }
         this.claim.setId(claimId);
+    }
+
+    // ✅ FINAL MISSING METHOD
+    public void setSerialNumber(String serialNumber) {
+        // intentionally empty
+        // serial number is derived via claim → device
     }
 }
