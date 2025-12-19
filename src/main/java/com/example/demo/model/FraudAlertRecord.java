@@ -25,7 +25,6 @@ public class FraudAlertRecord {
 
     private boolean resolved = false;
 
-    /* 🔗 RELATIONSHIP */
     @ManyToOne
     @JoinColumn(name = "claim_id", nullable = false)
     private WarrantyClaimRecord claim;
@@ -37,5 +36,20 @@ public class FraudAlertRecord {
 
     public FraudAlertRecord() {}
 
-    // getters & setters
+    // ===== Getters & Setters =====
+    public void setAlertType(String alertType) {
+        this.alertType = alertType;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setResolved(boolean resolved) {
+        this.resolved = resolved;
+    }
 }

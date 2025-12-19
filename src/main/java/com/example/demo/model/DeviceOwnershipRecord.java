@@ -16,15 +16,15 @@ public class DeviceOwnershipRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Serial number is required")
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
-    @NotBlank(message = "Owner name is required")
+    @NotBlank
     private String ownerName;
 
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Owner email is required")
+    @Email
+    @NotBlank
     private String ownerEmail;
 
     @PastOrPresent
@@ -35,11 +35,61 @@ public class DeviceOwnershipRecord {
 
     private boolean active = true;
 
-    /* 🔗 RELATIONSHIP */
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
     private List<WarrantyClaimRecord> claims;
 
     public DeviceOwnershipRecord() {}
 
-    // getters & setters
+    // ===== Getters & Setters =====
+    public Long getId() {
+        return id;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerEmail() {
+        return ownerEmail;
+    }
+
+    public void setOwnerEmail(String ownerEmail) {
+        this.ownerEmail = ownerEmail;
+    }
+
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public LocalDate getWarrantyExpiration() {
+        return warrantyExpiration;
+    }
+
+    public void setWarrantyExpiration(LocalDate warrantyExpiration) {
+        this.warrantyExpiration = warrantyExpiration;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

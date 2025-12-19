@@ -21,12 +21,22 @@ public class StolenDevice {
     @NotBlank
     private String details;
 
-    /* 🔗 RELATIONSHIP */
     @ManyToOne
     @JoinColumn(name = "device_id", nullable = false)
     private DeviceOwnershipRecord device;
 
     public StolenDevice() {}
 
-    // getters & setters
+    // ===== Getters & Setters =====
+    public Long getId() {
+        return id;
+    }
+
+    public DeviceOwnershipRecord getDevice() {
+        return device;
+    }
+
+    public void setDevice(DeviceOwnershipRecord device) {
+        this.device = device;
+    }
 }
