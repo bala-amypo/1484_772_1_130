@@ -8,5 +8,5 @@ import java.util.List;
 public interface FraudAlertRecordRepository
         extends JpaRepository<FraudAlertRecord, Long> {
 
-    List<FraudAlertRecord> findByClaimId(Long claimId);
+    List<FraudAlertRecord> findByClaim_Id(Long claimId);
 }
