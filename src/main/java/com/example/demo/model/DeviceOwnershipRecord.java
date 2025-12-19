@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "device_ownership_records",
-       uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber"))
+@Table(
+    name = "device_ownership_record",
+    uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
+)
 public class DeviceOwnershipRecord {
 
     @Id
@@ -23,8 +25,7 @@ public class DeviceOwnershipRecord {
 
     private boolean active;
 
-    public DeviceOwnershipRecord() {
-    }
+    public DeviceOwnershipRecord() {}
 
     public Long getId() {
         return id;

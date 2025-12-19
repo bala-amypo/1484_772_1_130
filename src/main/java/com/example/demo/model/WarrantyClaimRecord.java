@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "warranty_claim_records")
+@Table(name = "warranty_claim_record")
 public class WarrantyClaimRecord {
 
     @Id
@@ -21,15 +21,14 @@ public class WarrantyClaimRecord {
     private LocalDateTime submittedAt;
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         this.submittedAt = LocalDateTime.now();
         if (this.status == null) {
             this.status = "PENDING";
         }
     }
 
-    public WarrantyClaimRecord() {
-    }
+    public WarrantyClaimRecord() {}
 
     public Long getId() {
         return id;
