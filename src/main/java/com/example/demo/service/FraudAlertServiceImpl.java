@@ -1,12 +1,13 @@
 package com.example.demo.service.impl;
-import org.springframework.stereotype.Service;
 
 import com.example.demo.model.FraudAlertRecord;
 import com.example.demo.repository.FraudAlertRecordRepository;
 import com.example.demo.service.FraudAlertService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @Service
 public class FraudAlertServiceImpl implements FraudAlertService {
 
@@ -31,7 +32,8 @@ public class FraudAlertServiceImpl implements FraudAlertService {
 
     @Override
     public List<FraudAlertRecord> getAlertsByClaim(Long claimId) {
-        return repository.findByClaimId(claimId);
+        // ✅ CORRECT METHOD NAME
+        return repository.findByClaim_Id(claimId);
     }
 
     @Override
