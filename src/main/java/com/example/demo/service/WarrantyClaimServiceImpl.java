@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import org.springframework.stereotype.Service;
+
 import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.model.FraudAlertRecord;
 import com.example.demo.model.WarrantyClaimRecord;
