@@ -1,16 +1,17 @@
 package com.example.demo.service;
 
-import com.example.demo.model.StolenDevice;
+import com.example.demo.model.StolenDeviceReport;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StolenDeviceService {
 
-    StolenDevice reportStolen(StolenDevice device);
+    StolenDeviceReport reportStolen(StolenDeviceReport report);
 
-    List<StolenDevice> getReportsBySerial(String serialNumber);
+    List<StolenDeviceReport> getReportsBySerial(String serialNumber);
 
-    StolenDevice getReportById(Long id);
+    Optional<StolenDeviceReport> getReportById(Long id);
 
-    List<StolenDevice> getAllReports();
+    List<StolenDeviceReport> getAllReports();
 }
