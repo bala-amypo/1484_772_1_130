@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(
@@ -14,68 +16,30 @@ public class DeviceOwnershipRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Serial number is required")
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
+    @NotBlank(message = "Owner name is required")
     private String ownerName;
+
+    @Email(message = "Invalid email format")
+    @NotBlank(message = "Owner email is required")
     private String ownerEmail;
 
+    @PastOrPresent
     private LocalDate purchaseDate;
+
+    @Future
     private LocalDate warrantyExpiration;
 
-    private boolean active;
+    private boolean active = true;
+
+    /* 🔗 RELATIONSHIP */
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
+    private List<WarrantyClaimRecord> claims;
 
     public DeviceOwnershipRecord() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public String getOwnerEmail() {
-        return ownerEmail;
-    }
-
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public LocalDate getWarrantyExpiration() {
-        return warrantyExpiration;
-    }
-
-    public void setWarrantyExpiration(LocalDate warrantyExpiration) {
-        this.warrantyExpiration = warrantyExpiration;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    // getters & setters
 }

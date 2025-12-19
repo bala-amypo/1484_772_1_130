@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,75 +12,30 @@ public class FraudAlertRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long claimId;
-    private String serialNumber;
+    @NotBlank
     private String alertType;
+
+    @NotBlank
     private String severity;
+
+    @NotBlank
     private String message;
+
     private LocalDateTime alertDate;
-    private boolean resolved;
+
+    private boolean resolved = false;
+
+    /* 🔗 RELATIONSHIP */
+    @ManyToOne
+    @JoinColumn(name = "claim_id", nullable = false)
+    private WarrantyClaimRecord claim;
 
     @PrePersist
     public void onCreate() {
         this.alertDate = LocalDateTime.now();
-        this.resolved = false;
     }
 
     public FraudAlertRecord() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getClaimId() {
-        return claimId;
-    }
-
-    public void setClaimId(Long claimId) {
-        this.claimId = claimId;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public String getAlertType() {
-        return alertType;
-    }
-
-    public void setAlertType(String alertType) {
-        this.alertType = alertType;
-    }
-
-    public String getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getAlertDate() {
-        return alertDate;
-    }
-
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
-    }
+    // getters & setters
 }

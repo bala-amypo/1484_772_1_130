@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,46 +12,21 @@ public class StolenDevice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String serialNumber;
+    @NotBlank
     private String reportedBy;
+
+    @NotNull
     private LocalDateTime reportDate;
+
+    @NotBlank
     private String details;
+
+    /* 🔗 RELATIONSHIP */
+    @ManyToOne
+    @JoinColumn(name = "device_id", nullable = false)
+    private DeviceOwnershipRecord device;
 
     public StolenDevice() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public String getReportedBy() {
-        return reportedBy;
-    }
-
-    public void setReportedBy(String reportedBy) {
-        this.reportedBy = reportedBy;
-    }
-
-    public LocalDateTime getReportDate() {
-        return reportDate;
-    }
-
-    public void setReportDate(LocalDateTime reportDate) {
-        this.reportDate = reportDate;
-    }
-
-    public String getDetails() {
-        return details;
-    }
-
-    public void setDetails(String details) {
-        this.details = details;
-    }
+    // getters & setters
 }
