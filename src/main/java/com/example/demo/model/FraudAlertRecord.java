@@ -52,7 +52,6 @@ public class FraudAlertRecord {
         this.resolved = resolved;
     }
 
-    // ✅ BACKWARD COMPATIBILITY
     public void setClaimId(Long claimId) {
         if (this.claim == null) {
             this.claim = new WarrantyClaimRecord();
