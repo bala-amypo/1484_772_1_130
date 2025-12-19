@@ -40,56 +40,24 @@ public class DeviceOwnershipRecord {
 
     public DeviceOwnershipRecord() {}
 
-    // ===== Getters & Setters =====
-    public Long getId() {
-        return id;
-    }
+    // 🔧 REQUIRED GETTERS / SETTERS
+    public Long getId() { return id; }
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
+    public String getOwnerEmail() { return ownerEmail; }
+    public void setOwnerEmail(String ownerEmail) { this.ownerEmail = ownerEmail; }
 
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
+    public LocalDate getPurchaseDate() { return purchaseDate; }
+    public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
-    }
+    public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
+    public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public LocalDate getWarrantyExpiration() {
-        return warrantyExpiration;
-    }
-
-    public void setWarrantyExpiration(LocalDate warrantyExpiration) {
-        this.warrantyExpiration = warrantyExpiration;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

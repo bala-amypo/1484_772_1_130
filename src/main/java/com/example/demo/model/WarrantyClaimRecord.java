@@ -33,55 +33,26 @@ public class WarrantyClaimRecord {
     @PrePersist
     public void onCreate() {
         this.submittedAt = LocalDateTime.now();
-        if (this.status == null) {
-            this.status = "PENDING";
-        }
+        if (status == null) status = "PENDING";
     }
 
     public WarrantyClaimRecord() {}
 
-    // ===== Getters & Setters =====
-    public Long getId() {
-        return id;
-    }
+    // 🔧 REQUIRED GETTERS / SETTERS
+    public Long getId() { return id; }
 
-    public String getClaimReason() {
-        return claimReason;
-    }
+    public String getClaimReason() { return claimReason; }
+    public void setClaimReason(String claimReason) { this.claimReason = claimReason; }
 
-    public void setClaimReason(String claimReason) {
-        this.claimReason = claimReason;
-    }
+    public String getClaimantName() { return claimantName; }
+    public void setClaimantName(String claimantName) { this.claimantName = claimantName; }
 
-    public String getClaimantName() {
-        return claimantName;
-    }
+    public String getClaimantEmail() { return claimantEmail; }
+    public void setClaimantEmail(String claimantEmail) { this.claimantEmail = claimantEmail; }
 
-    public void setClaimantName(String claimantName) {
-        this.claimantName = claimantName;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getClaimantEmail() {
-        return claimantEmail;
-    }
-
-    public void setClaimantEmail(String claimantEmail) {
-        this.claimantEmail = claimantEmail;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public DeviceOwnershipRecord getDevice() {
-        return device;
-    }
-
-    public void setDevice(DeviceOwnershipRecord device) {
-        this.device = device;
-    }
+    public DeviceOwnershipRecord getDevice() { return device; }
+    public void setDevice(DeviceOwnershipRecord device) { this.device = device; }
 }

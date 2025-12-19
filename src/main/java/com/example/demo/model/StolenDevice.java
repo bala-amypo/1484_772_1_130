@@ -27,16 +27,9 @@ public class StolenDevice {
 
     public StolenDevice() {}
 
-    // ===== Getters & Setters =====
-    public Long getId() {
-        return id;
-    }
+    // 🔧 REQUIRED GETTERS / SETTERS
+    public Long getId() { return id; }
 
-    public DeviceOwnershipRecord getDevice() {
-        return device;
-    }
-
-    public void setDevice(DeviceOwnershipRecord device) {
-        this.device = device;
-    }
+    public DeviceOwnershipRecord getDevice() { return device; }
+    public void setDevice(DeviceOwnershipRecord device) { this.device = device; }
 }

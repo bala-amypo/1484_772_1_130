@@ -22,7 +22,6 @@ public class FraudAlertRecord {
     private String message;
 
     private LocalDateTime alertDate;
-
     private boolean resolved = false;
 
     @ManyToOne
@@ -36,20 +35,10 @@ public class FraudAlertRecord {
 
     public FraudAlertRecord() {}
 
-    // ===== Getters & Setters =====
-    public void setAlertType(String alertType) {
-        this.alertType = alertType;
-    }
+    // 🔧 REQUIRED GETTERS / SETTERS
+    public void setAlertType(String alertType) { this.alertType = alertType; }
+    public void setSeverity(String severity) { this.severity = severity; }
+    public void setMessage(String message) { this.message = message; }
 
-    public void setSeverity(String severity) {
-        this.severity = severity;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
-    }
+    public void setResolved(boolean resolved) { this.resolved = resolved; }
 }
