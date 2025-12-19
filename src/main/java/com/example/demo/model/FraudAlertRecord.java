@@ -59,9 +59,7 @@ public class FraudAlertRecord {
         this.claim.setId(claimId);
     }
 
-    // ✅ FINAL MISSING METHOD
     public void setSerialNumber(String serialNumber) {
-        // intentionally empty
-        // serial number is derived via claim → device
+       
     }
 }

@@ -21,7 +21,6 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
     private final FraudAlertRecordRepository alertRepo;
     private final FraudRuleRepository ruleRepo;
 
-    // EXACT ORDER REQUIRED
     public WarrantyClaimServiceImpl(
             WarrantyClaimRecordRepository claimRepo,
             DeviceOwnershipRecordRepository deviceRepo,

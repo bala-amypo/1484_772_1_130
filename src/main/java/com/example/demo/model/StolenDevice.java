@@ -39,7 +39,6 @@ public class StolenDevice {
         this.device = device;
     }
 
-    // ✅ BACKWARD COMPATIBILITY
     public String getSerialNumber() {
         return device != null ? device.getSerialNumber() : null;
     }

@@ -32,7 +32,6 @@ public class FraudAlertServiceImpl implements FraudAlertService {
 
     @Override
     public List<FraudAlertRecord> getAlertsByClaim(Long claimId) {
-        // ✅ CORRECT METHOD NAME
         return repository.findByClaim_Id(claimId);
     }
 

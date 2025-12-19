@@ -44,7 +44,6 @@ public class WarrantyClaimRecord {
         return id;
     }
 
-    // ✅ needed for FraudAlert backward compatibility
     public void setId(Long id) {
         this.id = id;
     }
@@ -89,7 +88,6 @@ public class WarrantyClaimRecord {
         this.device = device;
     }
 
-    // ✅ BACKWARD COMPATIBILITY (services expect this)
     public String getSerialNumber() {
         return device != null ? device.getSerialNumber() : null;
     }
