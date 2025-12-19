@@ -36,7 +36,6 @@ public class FraudAlertRecord {
 
     public FraudAlertRecord() {}
 
-    // ===== Getters & Setters =====
     public void setAlertType(String alertType) {
         this.alertType = alertType;
     }
@@ -51,5 +50,13 @@ public class FraudAlertRecord {
 
     public void setResolved(boolean resolved) {
         this.resolved = resolved;
+    }
+
+    // ✅ BACKWARD COMPATIBILITY (services expect this)
+    public void setClaimId(Long claimId) {
+        if (this.claim == null) {
+            this.claim = new WarrantyClaimRecord();
+        }
+        this.claim.setId(claimId);
     }
 }

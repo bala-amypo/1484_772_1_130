@@ -27,7 +27,6 @@ public class StolenDevice {
 
     public StolenDevice() {}
 
-    // ===== Getters & Setters =====
     public Long getId() {
         return id;
     }
@@ -38,5 +37,10 @@ public class StolenDevice {
 
     public void setDevice(DeviceOwnershipRecord device) {
         this.device = device;
+    }
+
+    // ✅ BACKWARD COMPATIBILITY
+    public String getSerialNumber() {
+        return device != null ? device.getSerialNumber() : null;
     }
 }

@@ -39,7 +39,6 @@ public class User {
 
     public User() {}
 
-    // ===== Getters & Setters =====
     public String getEmail() {
         return email;
     }

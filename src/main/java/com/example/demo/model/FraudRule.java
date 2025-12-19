@@ -28,7 +28,6 @@ public class FraudRule {
 
     public FraudRule() {}
 
-    // ===== Getters & Setters =====
     public String getRuleCode() {
         return ruleCode;
     }

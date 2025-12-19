@@ -40,9 +40,13 @@ public class WarrantyClaimRecord {
 
     public WarrantyClaimRecord() {}
 
-    // ===== Getters & Setters =====
     public Long getId() {
         return id;
+    }
+
+    // ✅ needed for FraudAlert backward compatibility
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getClaimReason() {
@@ -83,5 +87,10 @@ public class WarrantyClaimRecord {
 
     public void setDevice(DeviceOwnershipRecord device) {
         this.device = device;
+    }
+
+    // ✅ BACKWARD COMPATIBILITY (services expect this)
+    public String getSerialNumber() {
+        return device != null ? device.getSerialNumber() : null;
     }
 }
