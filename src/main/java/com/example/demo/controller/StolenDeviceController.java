@@ -2,69 +2,40 @@ package com.example.demo.controller;
 
 import com.example.demo.model.StolenDeviceReport;
 import com.example.demo.service.StolenDeviceService;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stolen-devices")
 public class StolenDeviceController {
 
-    private final StolenDeviceService stolenDeviceService;
+    private final StolenDeviceService service;
 
-    public StolenDeviceController(StolenDeviceService stolenDeviceService) {
-        this.stolenDeviceService = stolenDeviceService;
+    public StolenDeviceController(StolenDeviceService service) {
+        this.service = service;
     }
-
-    /* ================= REPORT STOLEN DEVICE ================= */
-    /* ADMIN ONLY */
 
     @PostMapping
-    public ResponseEntity<StolenDeviceReport> reportStolenDevice(
-            @RequestBody StolenDeviceReport report
-    ) {
-        StolenDeviceReport savedReport =
-                stolenDeviceService.reportStolen(report);
-        return ResponseEntity.ok(savedReport);
+    public ResponseEntity<StolenDeviceReport> report(@RequestBody StolenDeviceReport report) {
+        return ResponseEntity.ok(service.reportStolen(report));
     }
-
-    /* ================= GET ALL STOLEN REPORTS ================= */
-    /* PROTECTED */
 
     @GetMapping
-    public ResponseEntity<List<StolenDeviceReport>> getAllReports() {
-        return ResponseEntity.ok(
-                stolenDeviceService.getAllReports()
-        );
+    public ResponseEntity<List<StolenDeviceReport>> getAll() {
+        return ResponseEntity.ok(service.getAllReports());
     }
-
-    /* ================= GET REPORT BY ID ================= */
-    /* PROTECTED */
 
     @GetMapping("/{id}")
-    public ResponseEntity<StolenDeviceReport> getReportById(
-            @PathVariable Long id
-    ) {
-        Optional<StolenDeviceReport> report =
-                stolenDeviceService.getReportById(id);
-
-        return report
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<StolenDeviceReport> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getReportById(id));
     }
 
-    /* ================= GET REPORTS BY SERIAL ================= */
-    /* PROTECTED */
-
     @GetMapping("/serial/{serialNumber}")
-    public ResponseEntity<List<StolenDeviceReport>> getReportsBySerial(
+    public ResponseEntity<List<StolenDeviceReport>> getBySerial(
             @PathVariable String serialNumber
     ) {
-        return ResponseEntity.ok(
-                stolenDeviceService.getReportsBySerial(serialNumber)
-        );
+        return ResponseEntity.ok(service.getReportsBySerial(serialNumber));
     }
 }
