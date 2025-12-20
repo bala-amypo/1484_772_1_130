@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.model.FraudAlertRecord;
 import com.example.demo.repository.FraudAlertRecordRepository;
 import com.example.demo.service.FraudAlertService;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,51 +11,42 @@ import java.util.NoSuchElementException;
 @Service
 public class FraudAlertServiceImpl implements FraudAlertService {
 
-    private final FraudAlertRecordRepository fraudAlertRepository;
+    private final FraudAlertRecordRepository repository;
 
-    public FraudAlertServiceImpl(FraudAlertRecordRepository fraudAlertRepository) {
-        this.fraudAlertRepository = fraudAlertRepository;
+    public FraudAlertServiceImpl(FraudAlertRecordRepository repository) {
+        this.repository = repository;
     }
-
-    /* ================= CREATE ALERT ================= */
 
     @Override
     public FraudAlertRecord createAlert(FraudAlertRecord alert) {
-        return fraudAlertRepository.save(alert);
+        return repository.save(alert);
     }
-
-    /* ================= RESOLVE ALERT ================= */
 
     @Override
     public FraudAlertRecord resolveAlert(Long id) {
-
-        FraudAlertRecord alert = fraudAlertRepository.findById(id)
-                .orElseThrow(() ->
-                        new NoSuchElementException("Request not found")
-                );
-
+        FraudAlertRecord alert = getAlertById(id);
         alert.setResolved(true);
-        return fraudAlertRepository.save(alert);
+        return repository.save(alert);
     }
 
-    /* ================= GET ALERTS BY SERIAL ================= */
+    @Override
+    public FraudAlertRecord getAlertById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Match not found"));
+    }
 
     @Override
     public List<FraudAlertRecord> getAlertsBySerial(String serialNumber) {
-        return fraudAlertRepository.findBySerialNumber(serialNumber);
+        return repository.findByClaim_Device_SerialNumber(serialNumber);
     }
-
-    /* ================= GET ALERTS BY CLAIM ================= */
 
     @Override
     public List<FraudAlertRecord> getAlertsByClaim(Long claimId) {
-        return fraudAlertRepository.findByClaimId(claimId);
+        return repository.findByClaim_Id(claimId);
     }
-
-    /* ================= GET ALL ALERTS ================= */
 
     @Override
     public List<FraudAlertRecord> getAllAlerts() {
-        return fraudAlertRepository.findAll();
+        return repository.findAll();
     }
 }

@@ -8,12 +8,9 @@ import java.util.List;
 public interface FraudAlertRecordRepository
         extends JpaRepository<FraudAlertRecord, Long> {
 
-    // Finds alerts by claim ID
-    List<FraudAlertRecord> findByClaimId(Long claimId);
+    List<FraudAlertRecord> findByClaim_Id(Long claimId);
 
-    // Finds alerts by device serial number
-    List<FraudAlertRecord> findBySerialNumber(String serialNumber);
+    List<FraudAlertRecord> findByClaim_Device_SerialNumber(String serialNumber);
 
-    // Finds alerts by resolution status (true / false)
-    List<FraudAlertRecord> findByResolved(Boolean resolved);
+    List<FraudAlertRecord> findByResolved(boolean resolved);
 }

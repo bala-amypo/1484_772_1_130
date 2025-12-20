@@ -8,12 +8,10 @@ import java.util.List;
 public interface WarrantyClaimRecordRepository
         extends JpaRepository<WarrantyClaimRecord, Long> {
 
-    // Duplicate claim check
-    boolean existsBySerialNumberAndClaimReason(String serialNumber, String claimReason);
+    List<WarrantyClaimRecord> findByDevice_SerialNumber(String serialNumber);
 
-    // Finds claims by device serial number
-    List<WarrantyClaimRecord> findBySerialNumber(String serialNumber);
-
-    // Finds claims by status (PENDING / APPROVED / REJECTED / FLAGGED)
-    List<WarrantyClaimRecord> findByStatus(String status);
+    boolean existsByDevice_SerialNumberAndClaimReason(
+            String serialNumber,
+            String claimReason
+    );
 }

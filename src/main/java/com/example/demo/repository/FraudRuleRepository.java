@@ -9,9 +9,7 @@ import java.util.Optional;
 public interface FraudRuleRepository
         extends JpaRepository<FraudRule, Long> {
 
-    // Retrieves only active fraud rules
-    List<FraudRule> findByActiveTrue();
-
-    // Finds rule by rule code
     Optional<FraudRule> findByRuleCode(String ruleCode);
+
+    List<FraudRule> findByActiveTrue();
 }

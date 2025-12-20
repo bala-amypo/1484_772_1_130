@@ -8,9 +8,7 @@ import java.util.List;
 public interface StolenDeviceReportRepository
         extends JpaRepository<StolenDeviceReport, Long> {
 
-    // Check if a device is already reported stolen
-    boolean existsBySerialNumber(String serialNumber);
+    List<StolenDeviceReport> findByDevice_SerialNumber(String serialNumber);
 
-    // Find stolen reports by serial number
-    List<StolenDeviceReport> findBySerialNumber(String serialNumber);
+    boolean existsByDevice_SerialNumber(String serialNumber);
 }
