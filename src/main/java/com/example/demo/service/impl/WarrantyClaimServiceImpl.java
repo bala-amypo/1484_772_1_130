@@ -10,10 +10,10 @@ import com.example.demo.repository.FraudRuleRepository;
 import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.repository.WarrantyClaimRecordRepository;
 import com.example.demo.service.WarrantyClaimService;
-
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
-
+@Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     private final WarrantyClaimRecordRepository claimRepo;
