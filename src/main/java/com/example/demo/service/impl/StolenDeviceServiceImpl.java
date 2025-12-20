@@ -8,7 +8,6 @@ import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.service.StolenDeviceService;
 
 import java.util.List;
-import java.util.Optional;
 
 public class StolenDeviceServiceImpl implements StolenDeviceService {
 
@@ -39,8 +38,9 @@ public class StolenDeviceServiceImpl implements StolenDeviceService {
     }
 
     @Override
-    public Optional<StolenDeviceReport> getReportById(Long id) {
-        return stolenRepo.findById(id);
+    public StolenDeviceReport getReportById(Long id) {
+        return stolenRepo.findById(id)
+                .orElseThrow(ResourceNotFoundException::requestNotFound);
     }
 
     @Override

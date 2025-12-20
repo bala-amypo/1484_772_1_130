@@ -13,7 +13,6 @@ import com.example.demo.service.WarrantyClaimService;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
@@ -47,20 +46,10 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
         boolean flagged = false;
 
-        if (stolenRepo.existsByDevice_SerialNumber(serial)) {
+        if (stolenRepo.existsByDevice_SerialNumber(serial)) flagged = true;
+        if (device.getWarrantyExpiration().isBefore(LocalDate.now())) flagged = true;
+        if (claimRepo.existsByDevice_SerialNumberAndClaimReason(serial, claim.getClaimReason()))
             flagged = true;
-        }
-
-        if (device.getWarrantyExpiration().isBefore(LocalDate.now())) {
-            flagged = true;
-        }
-
-        if (claimRepo.existsByDevice_SerialNumberAndClaimReason(
-                serial,
-                claim.getClaimReason()
-        )) {
-            flagged = true;
-        }
 
         claim.setDevice(device);
         claim.setStatus(flagged ? "FLAGGED" : "PENDING");
@@ -81,8 +70,7 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     @Override
     public WarrantyClaimRecord updateClaimStatus(Long claimId, String status) {
-        WarrantyClaimRecord claim = claimRepo
-                .findById(claimId)
+        WarrantyClaimRecord claim = claimRepo.findById(claimId)
                 .orElseThrow(ResourceNotFoundException::requestNotFound);
 
         claim.setStatus(status);
@@ -90,8 +78,9 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
     }
 
     @Override
-    public Optional<WarrantyClaimRecord> getClaimById(Long id) {
-        return claimRepo.findById(id);
+    public WarrantyClaimRecord getClaimById(Long id) {
+        return claimRepo.findById(id)
+                .orElseThrow(ResourceNotFoundException::requestNotFound);
     }
 
     @Override
