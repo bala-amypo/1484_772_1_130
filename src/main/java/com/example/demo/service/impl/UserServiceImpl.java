@@ -6,6 +6,7 @@ import com.example.demo.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,6 +17,7 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
+    @Override
     public User registerUser(User user) {
         if (repository.existsByEmail(user.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
         return repository.save(user);
     }
 
+    @Override
     public User loginUser(String email, String password) {
         User user = repository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
@@ -32,12 +35,14 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    @Override
     public User getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    public java.util.Optional<User> findByEmail(String email) {
+    @Override
+    public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email);
     }
 }
