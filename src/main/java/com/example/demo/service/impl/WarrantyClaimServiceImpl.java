@@ -1,77 +1,102 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.DeviceOwnershipRecord;
+import com.example.demo.model.FraudAlertRecord;
+import com.example.demo.model.WarrantyClaimRecord;
+import com.example.demo.repository.DeviceOwnershipRecordRepository;
+import com.example.demo.repository.FraudAlertRecordRepository;
+import com.example.demo.repository.FraudRuleRepository;
+import com.example.demo.repository.StolenDeviceReportRepository;
+import com.example.demo.repository.WarrantyClaimRecordRepository;
 import com.example.demo.service.WarrantyClaimService;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
-@Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     private final WarrantyClaimRecordRepository claimRepo;
     private final DeviceOwnershipRecordRepository deviceRepo;
     private final StolenDeviceReportRepository stolenRepo;
+    private final FraudAlertRecordRepository alertRepo;
+    private final FraudRuleRepository ruleRepo;
 
     public WarrantyClaimServiceImpl(
             WarrantyClaimRecordRepository claimRepo,
             DeviceOwnershipRecordRepository deviceRepo,
-            StolenDeviceReportRepository stolenRepo
+            StolenDeviceReportRepository stolenRepo,
+            FraudAlertRecordRepository alertRepo,
+            FraudRuleRepository ruleRepo
     ) {
         this.claimRepo = claimRepo;
         this.deviceRepo = deviceRepo;
         this.stolenRepo = stolenRepo;
+        this.alertRepo = alertRepo;
+        this.ruleRepo = ruleRepo;
     }
 
     @Override
     public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
+        String serial = claim.getDevice().getSerialNumber();
 
         DeviceOwnershipRecord device = deviceRepo
-                .findBySerialNumber(claim.getSerialNumber())
-                .orElseThrow(() -> new NoSuchElementException("Offer not found"));
+                .findBySerialNumber(serial)
+                .orElseThrow(ResourceNotFoundException::offerNotFound);
 
-        claim.setDevice(device);
-        claim.setStatus("PENDING");
+        boolean flagged = false;
 
-        if (!device.isActive()) {
-            claim.setStatus("FLAGGED");
+        if (stolenRepo.existsByDevice_SerialNumber(serial)) {
+            flagged = true;
         }
 
         if (device.getWarrantyExpiration().isBefore(LocalDate.now())) {
-            claim.setStatus("FLAGGED");
+            flagged = true;
         }
 
-        if (stolenRepo.existsBySerialNumber(device.getSerialNumber())) {
-            claim.setStatus("FLAGGED");
+        if (claimRepo.existsByDevice_SerialNumberAndClaimReason(
+                serial,
+                claim.getClaimReason()
+        )) {
+            flagged = true;
         }
 
-        if (claimRepo.existsBySerialNumberAndClaimReason(
-                device.getSerialNumber(), claim.getClaimReason())) {
-            claim.setStatus("FLAGGED");
+        claim.setDevice(device);
+        claim.setStatus(flagged ? "FLAGGED" : "PENDING");
+
+        WarrantyClaimRecord saved = claimRepo.save(claim);
+
+        if (flagged) {
+            FraudAlertRecord alert = new FraudAlertRecord();
+            alert.setClaim(saved);
+            alert.setAlertType("AUTO_FLAG");
+            alert.setSeverity("HIGH");
+            alert.setMessage("Claim flagged by fraud rules");
+            alertRepo.save(alert);
         }
 
-        return claimRepo.save(claim);
+        return saved;
     }
 
     @Override
-    public WarrantyClaimRecord updateClaimStatus(Long id, String status) {
-        WarrantyClaimRecord claim = getClaimById(id);
+    public WarrantyClaimRecord updateClaimStatus(Long claimId, String status) {
+        WarrantyClaimRecord claim = claimRepo
+                .findById(claimId)
+                .orElseThrow(ResourceNotFoundException::requestNotFound);
+
         claim.setStatus(status);
         return claimRepo.save(claim);
     }
 
     @Override
-    public WarrantyClaimRecord getClaimById(Long id) {
-        return claimRepo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Request not found"));
+    public Optional<WarrantyClaimRecord> getClaimById(Long id) {
+        return claimRepo.findById(id);
     }
 
     @Override
     public List<WarrantyClaimRecord> getClaimsBySerial(String serialNumber) {
-        return claimRepo.findBySerialNumber(serialNumber);
+        return claimRepo.findByDevice_SerialNumber(serialNumber);
     }
 
     @Override

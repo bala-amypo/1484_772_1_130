@@ -1,15 +1,15 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.model.StolenDeviceReport;
 import com.example.demo.repository.DeviceOwnershipRecordRepository;
 import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.service.StolenDeviceService;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
-@Service
 public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     private final StolenDeviceReportRepository stolenRepo;
@@ -25,20 +25,22 @@ public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     @Override
     public StolenDeviceReport reportStolen(StolenDeviceReport report) {
-        deviceRepo.findBySerialNumber(report.getSerialNumber())
-                .orElseThrow(() -> new NoSuchElementException("Device not found"));
+        DeviceOwnershipRecord device = deviceRepo
+                .findBySerialNumber(report.getDevice().getSerialNumber())
+                .orElseThrow(ResourceNotFoundException::deviceNotFound);
+
+        report.setDevice(device);
         return stolenRepo.save(report);
     }
 
     @Override
-    public StolenDeviceReport getReportById(Long id) {
-        return stolenRepo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Request not found"));
+    public List<StolenDeviceReport> getReportsBySerial(String serialNumber) {
+        return stolenRepo.findByDevice_SerialNumber(serialNumber);
     }
 
     @Override
-    public List<StolenDeviceReport> getReportsBySerial(String serialNumber) {
-        return stolenRepo.findBySerialNumber(serialNumber);
+    public Optional<StolenDeviceReport> getReportById(Long id) {
+        return stolenRepo.findById(id);
     }
 
     @Override
