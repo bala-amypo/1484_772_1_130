@@ -1,46 +1,70 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
+import com.example.demo.exception.InvalidRequestException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.JwtTokenProvider;
 import com.example.demo.service.UserService;
-import java.util.NoSuchElementException;
-import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Service
+import java.util.NoSuchElementException;
+import java.util.Set;
+
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider
+    ) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public User register(RegisterRequest request) {
-        userRepository.findByEmail(request.getEmail())
-                .ifPresent(u -> { throw new IllegalArgumentException(); });
+    public User registerUser(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new InvalidRequestException("Email already in use");
+        }
 
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .roles(request.getRoles())
-                .build();
+        User user = new User(
+                request.getName(),
+                request.getEmail(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getRoles() == null ? Set.of("USER") : request.getRoles()
+        );
 
         return userRepository.save(user);
     }
 
     @Override
-    public User login(AuthRequest request) {
+    public User loginUser(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        if (!user.getPassword().equals("ENC_" + request.getPassword())) {
-            throw new IllegalArgumentException();
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new InvalidRequestException("Invalid input");
         }
 
         return user;
+    }
+
+    @Override
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 }

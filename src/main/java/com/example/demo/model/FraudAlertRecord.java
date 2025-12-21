@@ -10,22 +10,23 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class FraudAlertRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long claimId; // FK reference
+    @Column(nullable = false)
+    private Long claimId;
 
+    @Column(nullable = false)
     private String serialNumber;
 
+    @Column(nullable = false)
     private String alertType;
 
-    @Enumerated(EnumType.STRING)
-    private Severity severity;
+    @Column(nullable = false)
+    private String severity; // LOW / MEDIUM / HIGH / CRITICAL
 
     private String message;
 
@@ -33,18 +34,34 @@ public class FraudAlertRecord {
 
     private Boolean resolved = false;
 
+    // Relationships
+    @ManyToOne
+    @JoinColumn(name = "claim_id_fk")
+    private WarrantyClaimRecord claim;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // Core fields constructor
+    public FraudAlertRecord(
+            Long claimId,
+            String serialNumber,
+            String alertType,
+            String severity
+    ) {
+        this.claimId = claimId;
+        this.serialNumber = serialNumber;
+        this.alertType = alertType;
+        this.severity = severity;
+        this.resolved = false;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.alertDate = LocalDateTime.now();
         if (resolved == null) {
             resolved = false;
         }
-    }
-
-    public enum Severity {
-        LOW,
-        MEDIUM,
-        HIGH,
-        CRITICAL
     }
 }

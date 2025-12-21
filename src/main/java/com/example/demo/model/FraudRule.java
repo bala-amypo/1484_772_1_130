@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class FraudRule {
 
     @Id
@@ -24,12 +22,21 @@ public class FraudRule {
     @Column(nullable = false, unique = true)
     private String ruleCode;
 
+    @Column(nullable = false)
     private String ruleType;
+
     private String description;
 
     private Boolean active = true;
 
     private LocalDateTime createdAt;
+
+    // Core fields constructor
+    public FraudRule(String ruleCode, String ruleType) {
+        this.ruleCode = ruleCode;
+        this.ruleType = ruleType;
+        this.active = true;
+    }
 
     @PrePersist
     protected void onCreate() {
