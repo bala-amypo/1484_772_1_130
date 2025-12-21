@@ -1,3 +1,5 @@
+import java.util.Set;
+
 public class RegisterRequest {
     private String email;
     private String password;
