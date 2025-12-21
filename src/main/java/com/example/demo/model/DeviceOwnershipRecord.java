@@ -1,82 +1,68 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "device_ownership_records", uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber"))
+@Table(
+    name = "device_ownership_records",
+    uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
+)
+@Getter
+@Setter
+@NoArgsConstructor
 public class DeviceOwnershipRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Column(nullable = false, unique = true)
     private String serialNumber;
 
-    @NotBlank
+    @Column(nullable = false)
     private String ownerName;
 
-    @Email
     private String ownerEmail;
 
     private LocalDate purchaseDate;
 
-    @NotNull
+    @Column(nullable = false)
     private LocalDate warrantyExpiration;
 
-    private boolean active = true;
+    private Boolean active = true;
 
     private LocalDateTime createdAt;
 
+    // Relationships
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-    private List<WarrantyClaimRecord> claims;
+    private Set<WarrantyClaimRecord> claims = new HashSet<>();
+
+    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
+    private Set<StolenDeviceReport> stolenReports = new HashSet<>();
+
+    // Core fields constructor
+    public DeviceOwnershipRecord(
+            String serialNumber,
+            String ownerName,
+            LocalDate warrantyExpiration
+    ) {
+        this.serialNumber = serialNumber;
+        this.ownerName = ownerName;
+        this.warrantyExpiration = warrantyExpiration;
+        this.active = true;
+    }
 
     @PrePersist
-    public void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-
-    public DeviceOwnershipRecord() {}
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public boolean isEmpty() {
-        return id == null;
-    }
-
-    public Long getId() { return id; }
-    public String getSerialNumber() { return serialNumber; }
-    public String getOwnerName() { return ownerName; }
-    public String getOwnerEmail() { return ownerEmail; }
-    public LocalDate getPurchaseDate() { return purchaseDate; }
-    public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
-    public boolean getActive() { return active; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-
-    public void setId(Long id) { this.id = id; }
-    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
-    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
-    public void setOwnerEmail(String ownerEmail) { this.ownerEmail = ownerEmail; }
-    public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
-    public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
-    public void setActive(boolean active) { this.active = active; }
-
-    public static class Builder {
-        private final DeviceOwnershipRecord d = new DeviceOwnershipRecord();
-        public Builder id(Long id) { d.setId(id); return this; }
-        public Builder serialNumber(String s) { d.setSerialNumber(s); return this; }
-        public Builder ownerName(String o) { d.setOwnerName(o); return this; }
-        public Builder ownerEmail(String e) { d.setOwnerEmail(e); return this; }
-        public Builder purchaseDate(LocalDate p) { d.setPurchaseDate(p); return this; }
-        public Builder warrantyExpiration(LocalDate w) { d.setWarrantyExpiration(w); return this; }
-        public Builder active(boolean a) { d.setActive(a); return this; }
-        public DeviceOwnershipRecord build() { return d; }
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        if (active == null) {
+            active = true;
+        }
     }
 }

@@ -1,64 +1,47 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stolen_device_reports")
+@Table(
+    name = "stolen_device_reports",
+    uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
+)
+@Getter
+@Setter
+@NoArgsConstructor
 public class StolenDeviceReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    private String reportedBy;
+    @Column(nullable = false, unique = true)
+    private String serialNumber;
 
-    private String details;
+    @Column(nullable = false)
+    private String reportedBy;
 
     private LocalDateTime reportDate;
 
+    private String details;
+
+    // Relationship
     @ManyToOne
-    @JoinColumn(name = "device_id", nullable = false)
+    @JoinColumn(name = "device_id")
     private DeviceOwnershipRecord device;
 
-    @Transient
-    private String serialNumber;
+    // Core fields constructor
+    public StolenDeviceReport(String serialNumber, String reportedBy) {
+        this.serialNumber = serialNumber;
+        this.reportedBy = reportedBy;
+    }
 
     @PrePersist
-    public void onCreate() {
-        reportDate = LocalDateTime.now();
-    }
-
-    public StolenDeviceReport() {}
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public Long getId() { return id; }
-    public String getReportedBy() { return reportedBy; }
-    public String getDetails() { return details; }
-    public LocalDateTime getReportDate() { return reportDate; }
-    public DeviceOwnershipRecord getDevice() { return device; }
-    public String getSerialNumber() {
-        return serialNumber != null ? serialNumber : device != null ? device.getSerialNumber() : null;
-    }
-
-    public void setId(Long id) { this.id = id; }
-    public void setReportedBy(String reportedBy) { this.reportedBy = reportedBy; }
-    public void setDetails(String details) { this.details = details; }
-    public void setDevice(DeviceOwnershipRecord device) { this.device = device; }
-    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
-
-    public static class Builder {
-        private final StolenDeviceReport r = new StolenDeviceReport();
-        public Builder id(Long id) { r.setId(id); return this; }
-        public Builder reportedBy(String s) { r.setReportedBy(s); return this; }
-        public Builder details(String d) { r.setDetails(d); return this; }
-        public Builder device(DeviceOwnershipRecord d) { r.setDevice(d); return this; }
-        public Builder serialNumber(String s) { r.setSerialNumber(s); return this; }
-        public StolenDeviceReport build() { return r; }
+    protected void onCreate() {
+        this.reportDate = LocalDateTime.now();
     }
 }
