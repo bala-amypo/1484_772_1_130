@@ -6,7 +6,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import java.util.NoSuchElementException;
-
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {

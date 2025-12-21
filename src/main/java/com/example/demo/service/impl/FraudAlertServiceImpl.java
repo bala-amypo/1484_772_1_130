@@ -5,7 +5,7 @@ import com.example.demo.repository.FraudAlertRecordRepository;
 import com.example.demo.service.FraudAlertService;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+import org.springframework.stereotype.Service;
 
 
 @Service

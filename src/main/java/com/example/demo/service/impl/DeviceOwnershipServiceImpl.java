@@ -6,7 +6,7 @@ import com.example.demo.service.DeviceOwnershipService;
 import java.util.List;
 import java.util.Optional;
 import java.util.NoSuchElementException;
-
+import org.springframework.stereotype.Service;
 
 @Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
