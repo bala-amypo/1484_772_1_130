@@ -15,13 +15,11 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // POST /auth/register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         return ResponseEntity.status(201).body(userService.registerUser(user));
     }
 
-    // POST /auth/login
     @PostMapping("/login")
     public ResponseEntity<?> login(
             @RequestParam String email,

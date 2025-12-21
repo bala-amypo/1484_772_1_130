@@ -15,31 +15,26 @@ public class DeviceOwnershipController {
         this.deviceService = deviceService;
     }
 
-    // POST /api/devices (ADMIN)
     @PostMapping
     public ResponseEntity<?> registerDevice(@RequestBody DeviceOwnershipRecord device) {
         return ResponseEntity.status(201).body(deviceService.registerDevice(device));
     }
 
-    // GET /api/devices
     @GetMapping
     public ResponseEntity<?> getAllDevices() {
         return ResponseEntity.ok(deviceService.getAllDevices());
     }
 
-    // GET /api/devices/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getDeviceById(@PathVariable Long id) {
         return ResponseEntity.ok(deviceService.updateDeviceStatus(id, true));
     }
 
-    // GET /api/devices/serial/{serialNumber}
     @GetMapping("/serial/{serialNumber}")
     public ResponseEntity<?> getBySerial(@PathVariable String serialNumber) {
         return ResponseEntity.ok(deviceService.getBySerial(serialNumber));
     }
 
-    // PUT /api/devices/{id}/status (ADMIN)
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
