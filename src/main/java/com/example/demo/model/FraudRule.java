@@ -1,14 +1,16 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
-    name = "fraud_rules",
-    uniqueConstraints = @UniqueConstraint(columnNames = "ruleCode")
+        name = "fraud_rules",
+        uniqueConstraints = @UniqueConstraint(columnNames = "ruleCode")
 )
 @Getter
 @Setter
@@ -31,7 +33,6 @@ public class FraudRule {
 
     private LocalDateTime createdAt;
 
-    // Core fields constructor
     public FraudRule(String ruleCode, String ruleType) {
         this.ruleCode = ruleCode;
         this.ruleType = ruleType;

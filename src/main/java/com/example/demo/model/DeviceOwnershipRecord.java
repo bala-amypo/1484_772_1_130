@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,8 +12,8 @@ import java.util.Set;
 
 @Entity
 @Table(
-    name = "device_ownership_records",
-    uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
+        name = "device_ownership_records",
+        uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
 )
 @Getter
 @Setter
@@ -39,14 +41,12 @@ public class DeviceOwnershipRecord {
 
     private LocalDateTime createdAt;
 
-    // Relationships
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
     private Set<WarrantyClaimRecord> claims = new HashSet<>();
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
     private Set<StolenDeviceReport> stolenReports = new HashSet<>();
 
-    // Core fields constructor
     public DeviceOwnershipRecord(
             String serialNumber,
             String ownerName,

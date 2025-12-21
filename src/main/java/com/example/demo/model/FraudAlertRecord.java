@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +28,7 @@ public class FraudAlertRecord {
     private String alertType;
 
     @Column(nullable = false)
-    private String severity; // LOW / MEDIUM / HIGH / CRITICAL
+    private String severity;
 
     private String message;
 
@@ -34,7 +36,6 @@ public class FraudAlertRecord {
 
     private Boolean resolved = false;
 
-    // Relationships
     @ManyToOne
     @JoinColumn(name = "claim_id_fk")
     private WarrantyClaimRecord claim;
@@ -43,7 +44,6 @@ public class FraudAlertRecord {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Core fields constructor
     public FraudAlertRecord(
             Long claimId,
             String serialNumber,

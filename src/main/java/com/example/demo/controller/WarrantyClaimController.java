@@ -15,31 +15,26 @@ public class WarrantyClaimController {
         this.claimService = claimService;
     }
 
-    // POST /api/claims
     @PostMapping
     public ResponseEntity<?> submitClaim(@RequestBody WarrantyClaimRecord claim) {
         return ResponseEntity.status(201).body(claimService.submitClaim(claim));
     }
 
-    // GET /api/claims
     @GetMapping
     public ResponseEntity<?> getAllClaims() {
         return ResponseEntity.ok(claimService.getAllClaims());
     }
 
-    // GET /api/claims/{id}
     @GetMapping("/{id}")
     public ResponseEntity<?> getClaimById(@PathVariable Long id) {
         return ResponseEntity.ok(claimService.getClaimById(id));
     }
 
-    // GET /api/claims/serial/{serialNumber}
     @GetMapping("/serial/{serialNumber}")
     public ResponseEntity<?> getBySerial(@PathVariable String serialNumber) {
         return ResponseEntity.ok(claimService.getClaimsBySerial(serialNumber));
     }
 
-    // PUT /api/claims/{id}/status (ADMIN)
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateStatus(
             @PathVariable Long id,
