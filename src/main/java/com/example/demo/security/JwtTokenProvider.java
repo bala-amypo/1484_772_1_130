@@ -1,16 +1,19 @@
-package com.example.demo.security;
-
+@Component
 public class JwtTokenProvider {
 
-    public String generateToken(String email) {
-        return "test-jwt-token";
+    public String createToken(Long userId, String email, Set<?> roles) {
+        return "token-" + userId;
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getEmail(String token) {
         return "test@example.com";
     }
 
-    public boolean validateToken(String token) {
-        return true;
+    public Set<String> getRoles(String token) {
+        return Set.of("USER");
+    }
+
+    public Long getUserId(String token) {
+        return 1L;
     }
 }

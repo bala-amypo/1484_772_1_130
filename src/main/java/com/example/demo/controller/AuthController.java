@@ -1,29 +1,44 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.User;
-import com.example.demo.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
+    public AuthResponse register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        String token = jwtTokenProvider.createToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRoles()
+        );
+        return new AuthResponse(token);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
-        return ResponseEntity.ok(
-                userService.loginUser(user.getEmail(), user.getPassword())
+    public AuthResponse login(User user) {
+        User u = userRepository.findByEmail(user.getEmail())
+                .orElseThrow();
+        if (!passwordEncoder.matches(user.getPassword(), u.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+        return new AuthResponse(
+                jwtTokenProvider.createToken(
+                        u.getId(),
+                        u.getEmail(),
+                        u.getRoles()
+                )
         );
     }
 }
