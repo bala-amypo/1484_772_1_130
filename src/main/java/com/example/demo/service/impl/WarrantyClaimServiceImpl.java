@@ -40,8 +40,11 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     @Override
     public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
+
         DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(claim.getSerialNumber())
                 .orElseThrow(() -> new NoSuchElementException("Offer not found"));
+
+        claim.setDevice(device);
 
         boolean flagged = false;
 
