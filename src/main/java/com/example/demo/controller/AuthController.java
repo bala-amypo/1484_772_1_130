@@ -4,6 +4,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
 import java.util.Set;
+
+import com.example.demo.model.User;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

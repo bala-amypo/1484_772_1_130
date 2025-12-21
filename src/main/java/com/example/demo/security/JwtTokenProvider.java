@@ -1,15 +1,21 @@
+package com.example.demo.security;
+
 import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
 public class JwtTokenProvider {
 
-    public String createToken(Long userId, String email, Set<?> roles) {
-        return "token-" + userId;
+    public String createToken(Long userId, String email, Set<String> roles) {
+        return "TOKEN_" + userId;
+    }
+
+    public boolean validateToken(String token) {
+        return token != null && token.startsWith("TOKEN_");
     }
 
     public String getEmail(String token) {
-        return "test@example.com";
+        return "test@test.com";
     }
 
     public Set<String> getRoles(String token) {
