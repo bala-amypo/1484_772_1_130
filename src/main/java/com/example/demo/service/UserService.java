@@ -1,11 +1,12 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
-import java.util.Optional;
 
 public interface UserService {
-    User registerUser(User user);
-    User loginUser(String email, String password);
-    User getById(Long id);
-    Optional<User> findByEmail(String email);
+
+    User register(RegisterRequest request);
+
+    User login(AuthRequest request);
 }

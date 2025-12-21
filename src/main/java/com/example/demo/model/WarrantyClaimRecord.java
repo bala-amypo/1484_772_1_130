@@ -33,12 +33,23 @@ public class WarrantyClaimRecord {
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
     private List<FraudAlertRecord> alerts;
 
+    @Transient
+    private String serialNumber;
+
     @PrePersist
     public void onCreate() {
         submittedAt = LocalDateTime.now();
     }
 
     public WarrantyClaimRecord() {}
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public boolean isEmpty() {
+        return id == null;
+    }
 
     public Long getId() { return id; }
     public String getClaimReason() { return claimReason; }
@@ -47,11 +58,8 @@ public class WarrantyClaimRecord {
     public String getStatus() { return status; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public DeviceOwnershipRecord getDevice() { return device; }
-    public boolean isEmpty() {
-        return id == null;
-    }
     public String getSerialNumber() {
-        return device != null ? device.getSerialNumber() : null;
+        return serialNumber != null ? serialNumber : device != null ? device.getSerialNumber() : null;
     }
 
     public void setId(Long id) { this.id = id; }
@@ -60,23 +68,17 @@ public class WarrantyClaimRecord {
     public void setClaimantEmail(String claimantEmail) { this.claimantEmail = claimantEmail; }
     public void setStatus(String status) { this.status = status; }
     public void setDevice(DeviceOwnershipRecord device) { this.device = device; }
-
-    public static Builder builder() {
-        return new Builder();
-    }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
 
     public static class Builder {
         private final WarrantyClaimRecord c = new WarrantyClaimRecord();
-
-        public Builder id(Long id) { c.id = id; return this; }
-        public Builder claimReason(String claimReason) { c.claimReason = claimReason; return this; }
-        public Builder claimantName(String claimantName) { c.claimantName = claimantName; return this; }
-        public Builder claimantEmail(String claimantEmail) { c.claimantEmail = claimantEmail; return this; }
-        public Builder status(String status) { c.status = status; return this; }
-        public Builder device(DeviceOwnershipRecord device) { c.device = device; return this; }
-
-        public WarrantyClaimRecord build() {
-            return c;
-        }
+        public Builder id(Long id) { c.setId(id); return this; }
+        public Builder claimReason(String r) { c.setClaimReason(r); return this; }
+        public Builder claimantName(String n) { c.setClaimantName(n); return this; }
+        public Builder claimantEmail(String e) { c.setClaimantEmail(e); return this; }
+        public Builder status(String s) { c.setStatus(s); return this; }
+        public Builder device(DeviceOwnershipRecord d) { c.setDevice(d); return this; }
+        public Builder serialNumber(String s) { c.setSerialNumber(s); return this; }
+        public WarrantyClaimRecord build() { return c; }
     }
 }

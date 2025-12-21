@@ -40,13 +40,16 @@ public class DeviceOwnershipRecord {
     public void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
+    public DeviceOwnershipRecord() {}
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public boolean isEmpty() {
         return id == null;
     }
-    public boolean getActive() {
-        return active;
-    }
-    public DeviceOwnershipRecord() {}
 
     public Long getId() { return id; }
     public String getSerialNumber() { return serialNumber; }
@@ -54,7 +57,7 @@ public class DeviceOwnershipRecord {
     public String getOwnerEmail() { return ownerEmail; }
     public LocalDate getPurchaseDate() { return purchaseDate; }
     public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
-    public boolean isActive() { return active; }
+    public boolean getActive() { return active; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setId(Long id) { this.id = id; }
@@ -65,23 +68,15 @@ public class DeviceOwnershipRecord {
     public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
     public void setActive(boolean active) { this.active = active; }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static class Builder {
         private final DeviceOwnershipRecord d = new DeviceOwnershipRecord();
-
-        public Builder id(Long id) { d.id = id; return this; }
-        public Builder serialNumber(String serialNumber) { d.serialNumber = serialNumber; return this; }
-        public Builder ownerName(String ownerName) { d.ownerName = ownerName; return this; }
-        public Builder ownerEmail(String ownerEmail) { d.ownerEmail = ownerEmail; return this; }
-        public Builder purchaseDate(LocalDate purchaseDate) { d.purchaseDate = purchaseDate; return this; }
-        public Builder warrantyExpiration(LocalDate warrantyExpiration) { d.warrantyExpiration = warrantyExpiration; return this; }
-        public Builder active(boolean active) { d.active = active; return this; }
-
-        public DeviceOwnershipRecord build() {
-            return d;
-        }
+        public Builder id(Long id) { d.setId(id); return this; }
+        public Builder serialNumber(String s) { d.setSerialNumber(s); return this; }
+        public Builder ownerName(String o) { d.setOwnerName(o); return this; }
+        public Builder ownerEmail(String e) { d.setOwnerEmail(e); return this; }
+        public Builder purchaseDate(LocalDate p) { d.setPurchaseDate(p); return this; }
+        public Builder warrantyExpiration(LocalDate w) { d.setWarrantyExpiration(w); return this; }
+        public Builder active(boolean a) { d.setActive(a); return this; }
+        public DeviceOwnershipRecord build() { return d; }
     }
 }
