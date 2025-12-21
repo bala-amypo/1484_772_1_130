@@ -33,17 +33,13 @@ public class User {
     @PrePersist
     public void onCreate() {
         createdAt = LocalDateTime.now();
-        if (roles.isEmpty()) {
-            roles.add("USER");
-        }
+        if (roles.isEmpty()) roles.add("USER");
     }
 
     public User() {}
 
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
+    public static Builder builder() {
+        return new Builder();
     }
 
     public Long getId() { return id; }
@@ -51,7 +47,6 @@ public class User {
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public Set<String> getRoles() { return roles; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
 
     public void setId(Long id) { this.id = id; }
     public void setName(String name) { this.name = name; }
@@ -59,21 +54,13 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public void setRoles(Set<String> roles) { this.roles = roles; }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static class Builder {
         private final User u = new User();
-
-        public Builder id(Long id) { u.id = id; return this; }
-        public Builder name(String name) { u.name = name; return this; }
-        public Builder email(String email) { u.email = email; return this; }
-        public Builder password(String password) { u.password = password; return this; }
-        public Builder roles(Set<String> roles) { u.roles = roles; return this; }
-
-        public User build() {
-            return u;
-        }
+        public Builder id(Long id) { u.setId(id); return this; }
+        public Builder name(String n) { u.setName(n); return this; }
+        public Builder email(String e) { u.setEmail(e); return this; }
+        public Builder password(String p) { u.setPassword(p); return this; }
+        public Builder roles(Set<String> r) { u.setRoles(r); return this; }
+        public User build() { return u; }
     }
 }

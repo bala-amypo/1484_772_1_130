@@ -28,28 +28,32 @@ public class FraudAlertRecord {
     @JoinColumn(name = "claim_id", nullable = false)
     private WarrantyClaimRecord claim;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Transient
+    private Long claimId;
+
+    @Transient
+    private String serialNumber;
 
     @PrePersist
     public void onCreate() {
         alertDate = LocalDateTime.now();
     }
-    public boolean getResolved() {
-        return resolved;
-    }
+
     public FraudAlertRecord() {}
 
-    public Long getId() { return id; }
-    public String getAlertType() { return alertType; }
-    public String getSeverity() { return severity; }
-    public String getMessage() { return message; }
-    public boolean isResolved() { return resolved; }
-    public WarrantyClaimRecord getClaim() { return claim; }
+    public static Builder builder() {
+        return new Builder();
+    }
 
+    public Long getId() { return id; }
+    public boolean getResolved() { return resolved; }
+    public WarrantyClaimRecord getClaim() { return claim; }
+    public Long getClaimId() {
+        return claimId != null ? claimId : claim != null ? claim.getId() : null;
+    }
     public String getSerialNumber() {
-        return claim != null ? claim.getSerialNumber() : null;
+        return serialNumber != null ? serialNumber :
+                claim != null ? claim.getSerialNumber() : null;
     }
 
     public void setId(Long id) { this.id = id; }
@@ -58,24 +62,19 @@ public class FraudAlertRecord {
     public void setMessage(String message) { this.message = message; }
     public void setResolved(boolean resolved) { this.resolved = resolved; }
     public void setClaim(WarrantyClaimRecord claim) { this.claim = claim; }
-
-    public static Builder builder() {
-        return new Builder();
-    }
+    public void setClaimId(Long claimId) { this.claimId = claimId; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
 
     public static class Builder {
         private final FraudAlertRecord f = new FraudAlertRecord();
-
-        public Builder id(Long id) { f.id = id; return this; }
-        public Builder alertType(String alertType) { f.alertType = alertType; return this; }
-        public Builder severity(String severity) { f.severity = severity; return this; }
-        public Builder message(String message) { f.message = message; return this; }
-        public Builder resolved(boolean resolved) { f.resolved = resolved; return this; }
-        public Builder claim(WarrantyClaimRecord claim) { f.claim = claim; return this; }
-        public Builder user(User user) { f.user = user; return this; }
-
-        public FraudAlertRecord build() {
-            return f;
-        }
+        public Builder id(Long id) { f.setId(id); return this; }
+        public Builder alertType(String a) { f.setAlertType(a); return this; }
+        public Builder severity(String s) { f.setSeverity(s); return this; }
+        public Builder message(String m) { f.setMessage(m); return this; }
+        public Builder resolved(boolean r) { f.setResolved(r); return this; }
+        public Builder claim(WarrantyClaimRecord c) { f.setClaim(c); return this; }
+        public Builder claimId(Long id) { f.setClaimId(id); return this; }
+        public Builder serialNumber(String s) { f.setSerialNumber(s); return this; }
+        public FraudAlertRecord build() { return f; }
     }
 }
