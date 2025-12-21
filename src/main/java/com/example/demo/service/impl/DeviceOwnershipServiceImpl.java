@@ -4,11 +4,11 @@ import com.example.demo.exception.InvalidRequestException;
 import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.repository.DeviceOwnershipRecordRepository;
 import com.example.demo.service.DeviceOwnershipService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
 @Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {

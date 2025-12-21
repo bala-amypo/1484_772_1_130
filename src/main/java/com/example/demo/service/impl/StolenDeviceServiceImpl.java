@@ -4,11 +4,11 @@ import com.example.demo.model.StolenDeviceReport;
 import com.example.demo.repository.DeviceOwnershipRecordRepository;
 import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.service.StolenDeviceService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
 @Service
 public class StolenDeviceServiceImpl implements StolenDeviceService {

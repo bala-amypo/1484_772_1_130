@@ -5,10 +5,12 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -27,13 +29,10 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new InvalidRequestException("Email already in use");
         }
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         if (user.getRoles() == null || user.getRoles().isEmpty()) {
             user.setRoles(Set.of("USER"));
         }
-
         return userRepository.save(user);
     }
 
@@ -41,11 +40,9 @@ public class UserServiceImpl implements UserService {
     public User loginUser(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
-
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidRequestException("Invalid input");
         }
-
         return user;
     }
 

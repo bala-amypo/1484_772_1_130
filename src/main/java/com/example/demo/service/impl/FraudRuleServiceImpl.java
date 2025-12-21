@@ -4,11 +4,11 @@ import com.example.demo.exception.InvalidRequestException;
 import com.example.demo.model.FraudRule;
 import com.example.demo.repository.FraudRuleRepository;
 import com.example.demo.service.FraudRuleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
 @Service
 public class FraudRuleServiceImpl implements FraudRuleService {
