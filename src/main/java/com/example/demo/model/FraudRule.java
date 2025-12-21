@@ -32,12 +32,10 @@ public class FraudRule {
 
     public FraudRule() {}
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public Long getId() { return id; }
     public String getRuleCode() { return ruleCode; }
+    public String getRuleType() { return ruleType; }
+    public String getDescription() { return description; }
     public boolean isActive() { return active; }
 
     public void setId(Long id) { this.id = id; }
@@ -46,13 +44,19 @@ public class FraudRule {
     public void setDescription(String description) { this.description = description; }
     public void setActive(boolean active) { this.active = active; }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public static class Builder {
         private final FraudRule r = new FraudRule();
+
         public Builder id(Long id) { r.setId(id); return this; }
         public Builder ruleCode(String c) { r.setRuleCode(c); return this; }
         public Builder ruleType(String t) { r.setRuleType(t); return this; }
         public Builder description(String d) { r.setDescription(d); return this; }
         public Builder active(boolean a) { r.setActive(a); return this; }
+
         public FraudRule build() { return r; }
     }
 }
