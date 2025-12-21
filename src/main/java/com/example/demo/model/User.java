@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -9,8 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(
-    name = "users",
-    uniqueConstraints = @UniqueConstraint(columnNames = "email")
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email")
 )
 @Getter
 @Setter
@@ -27,25 +29,22 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    // Hashed password only (BCrypt done in service layer)
     @Column(nullable = false)
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id")
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "role", nullable = false)
     private Set<String> roles = new HashSet<>();
 
     private LocalDateTime createdAt;
 
-    // Relationship
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<FraudAlertRecord> alerts = new HashSet<>();
 
-    // Core fields constructor
     public User(String name, String email, String password, Set<String> roles) {
         this.name = name;
         this.email = email;

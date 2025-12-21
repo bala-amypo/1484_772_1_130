@@ -1,7 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -18,7 +20,6 @@ public class WarrantyClaimRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Foreign key reference
     @Column(nullable = false)
     private String serialNumber;
 
@@ -37,7 +38,6 @@ public class WarrantyClaimRecord {
 
     private LocalDateTime createdAt;
 
-    // Relationships
     @ManyToOne
     @JoinColumn(name = "device_id")
     private DeviceOwnershipRecord device;
@@ -45,7 +45,6 @@ public class WarrantyClaimRecord {
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
     private Set<FraudAlertRecord> alerts = new HashSet<>();
 
-    // Core fields constructor
     public WarrantyClaimRecord(
             String serialNumber,
             String claimantName,

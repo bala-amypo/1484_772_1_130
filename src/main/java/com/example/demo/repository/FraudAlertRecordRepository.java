@@ -9,18 +9,13 @@ import java.util.Optional;
 public interface FraudAlertRecordRepository
         extends JpaRepository<FraudAlertRecord, Long> {
 
-    // Retrieves specific alert
     Optional<FraudAlertRecord> findById(Long id);
 
-    // Retrieves all alerts
     List<FraudAlertRecord> findAll();
 
-    // Finds alerts by claim
     List<FraudAlertRecord> findByClaimId(Long claimId);
 
-    // Finds alerts by device serial
     List<FraudAlertRecord> findBySerialNumber(String serialNumber);
 
-    // Finds alerts by resolution status
     List<FraudAlertRecord> findByResolved(Boolean resolved);
 }
