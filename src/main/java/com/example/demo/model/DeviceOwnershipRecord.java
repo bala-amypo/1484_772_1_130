@@ -59,4 +59,24 @@ public class DeviceOwnershipRecord {
     public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
     public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
     public void setActive(boolean active) { this.active = active; }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final DeviceOwnershipRecord d = new DeviceOwnershipRecord();
+
+        public Builder id(Long id) { d.id = id; return this; }
+        public Builder serialNumber(String serialNumber) { d.serialNumber = serialNumber; return this; }
+        public Builder ownerName(String ownerName) { d.ownerName = ownerName; return this; }
+        public Builder ownerEmail(String ownerEmail) { d.ownerEmail = ownerEmail; return this; }
+        public Builder purchaseDate(LocalDate purchaseDate) { d.purchaseDate = purchaseDate; return this; }
+        public Builder warrantyExpiration(LocalDate warrantyExpiration) { d.warrantyExpiration = warrantyExpiration; return this; }
+        public Builder active(boolean active) { d.active = active; return this; }
+
+        public DeviceOwnershipRecord build() {
+            return d;
+        }
+    }
 }
