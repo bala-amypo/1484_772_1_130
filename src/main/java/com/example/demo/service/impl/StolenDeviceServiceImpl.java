@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+
+
+@Service
 public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     private final StolenDeviceReportRepository stolenRepo;

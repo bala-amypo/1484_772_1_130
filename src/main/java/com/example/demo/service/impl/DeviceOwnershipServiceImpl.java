@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.NoSuchElementException;
 
+
+@Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
 
     private final DeviceOwnershipRecordRepository repo;
