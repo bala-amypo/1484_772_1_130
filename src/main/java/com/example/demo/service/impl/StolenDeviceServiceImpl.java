@@ -8,7 +8,9 @@ import com.example.demo.service.StolenDeviceService;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     private final StolenDeviceReportRepository reportRepo;
