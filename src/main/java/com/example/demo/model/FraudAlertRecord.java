@@ -56,4 +56,24 @@ public class FraudAlertRecord {
     public void setMessage(String message) { this.message = message; }
     public void setResolved(boolean resolved) { this.resolved = resolved; }
     public void setClaim(WarrantyClaimRecord claim) { this.claim = claim; }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final FraudAlertRecord f = new FraudAlertRecord();
+
+        public Builder id(Long id) { f.id = id; return this; }
+        public Builder alertType(String alertType) { f.alertType = alertType; return this; }
+        public Builder severity(String severity) { f.severity = severity; return this; }
+        public Builder message(String message) { f.message = message; return this; }
+        public Builder resolved(boolean resolved) { f.resolved = resolved; return this; }
+        public Builder claim(WarrantyClaimRecord claim) { f.claim = claim; return this; }
+        public Builder user(User user) { f.user = user; return this; }
+
+        public FraudAlertRecord build() {
+            return f;
+        }
+    }
 }
