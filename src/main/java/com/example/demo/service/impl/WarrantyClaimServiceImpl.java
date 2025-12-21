@@ -2,14 +2,18 @@ package com.example.demo.service.impl;
 
 import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.model.WarrantyClaimRecord;
-import com.example.demo.repository.*;
+import com.example.demo.repository.DeviceOwnershipRecordRepository;
+import com.example.demo.repository.FraudAlertRecordRepository;
+import com.example.demo.repository.FraudRuleRepository;
+import com.example.demo.repository.StolenDeviceReportRepository;
+import com.example.demo.repository.WarrantyClaimRecordRepository;
 import com.example.demo.service.WarrantyClaimService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
 @Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
@@ -36,7 +40,6 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     @Override
     public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
-
         DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(claim.getSerialNumber())
                 .orElseThrow(() -> new NoSuchElementException("Offer not found"));
 
