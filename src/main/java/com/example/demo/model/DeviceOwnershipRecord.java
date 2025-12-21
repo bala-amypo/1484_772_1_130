@@ -40,7 +40,12 @@ public class DeviceOwnershipRecord {
     public void onCreate() {
         createdAt = LocalDateTime.now();
     }
-
+    public boolean isEmpty() {
+        return id == null;
+    }
+    public boolean getActive() {
+        return active;
+    }
     public DeviceOwnershipRecord() {}
 
     public Long getId() { return id; }

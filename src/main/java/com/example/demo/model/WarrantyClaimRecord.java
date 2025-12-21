@@ -47,7 +47,9 @@ public class WarrantyClaimRecord {
     public String getStatus() { return status; }
     public LocalDateTime getSubmittedAt() { return submittedAt; }
     public DeviceOwnershipRecord getDevice() { return device; }
-
+    public boolean isEmpty() {
+        return id == null;
+    }
     public String getSerialNumber() {
         return device != null ? device.getSerialNumber() : null;
     }

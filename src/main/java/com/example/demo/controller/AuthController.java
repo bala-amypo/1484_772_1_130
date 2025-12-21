@@ -1,58 +1,24 @@
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.http.ResponseEntity;
-import java.util.Set;
-import com.example.demo.security.JwtTokenProvider;
-import com.example.demo.model.User;
-import com.example.demo.dto.AuthResponse;
+package com.example.demo.controller;
+
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.RegisterRequest;
-import com.example.demo.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.demo.model.User;
+import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 
-@RestController
-@RequestMapping("/auth")
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
-    public AuthController(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtTokenProvider jwtTokenProvider
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
-    public AuthResponse register(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        String token = jwtTokenProvider.createToken(
-                user.getId(),
-                user.getEmail(),
-                user.getRoles()
-        );
-        return new AuthResponse(token);
+    public ResponseEntity<?> register(RegisterRequest request) {
+        return userService.register(request);
     }
 
-    public AuthResponse login(User user) {
-        User u = userRepository.findByEmail(user.getEmail())
-                .orElseThrow();
-        if (!passwordEncoder.matches(user.getPassword(), u.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-        return new AuthResponse(
-                jwtTokenProvider.createToken(
-                        u.getId(),
-                        u.getEmail(),
-                        u.getRoles()
-                )
-        );
+    public ResponseEntity<?> login(AuthRequest request) {
+        return userService.login(request);
     }
 }

@@ -36,7 +36,9 @@ public class FraudAlertRecord {
     public void onCreate() {
         alertDate = LocalDateTime.now();
     }
-
+    public boolean getResolved() {
+        return resolved;
+    }
     public FraudAlertRecord() {}
 
     public Long getId() { return id; }
