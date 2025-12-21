@@ -2,41 +2,49 @@ package com.example.demo.controller;
 
 import com.example.demo.model.FraudRule;
 import com.example.demo.service.FraudRuleService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/fraud-rules")
 public class FraudRuleController {
 
-    private final FraudRuleService service;
+    private final FraudRuleService ruleService;
 
-    public FraudRuleController(FraudRuleService service) {
-        this.service = service;
+    public FraudRuleController(FraudRuleService ruleService) {
+        this.ruleService = ruleService;
     }
 
+    // POST /api/fraud-rules (ADMIN)
     @PostMapping
-    public FraudRule create(@RequestBody FraudRule rule) {
-        return service.createRule(rule);
+    public ResponseEntity<?> createRule(@RequestBody FraudRule rule) {
+        return ResponseEntity.status(201).body(ruleService.createRule(rule));
     }
 
+    // GET /api/fraud-rules
     @GetMapping
-    public List<FraudRule> getAll() {
-        return service.getAllRules();
+    public ResponseEntity<?> getAllRules() {
+        return ResponseEntity.ok(ruleService.getAllRules());
     }
 
+    // GET /api/fraud-rules/{id}
     @GetMapping("/{id}")
-    public FraudRule getById(@PathVariable Long id) {
-        return service.updateRule(id, new FraudRule());
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(ruleService.getRuleByCode(id.toString()));
     }
 
+    // GET /api/fraud-rules/active
     @GetMapping("/active")
-    public List<FraudRule> getActive() {
-        return service.getActiveRules();
+    public ResponseEntity<?> getActiveRules() {
+        return ResponseEntity.ok(ruleService.getActiveRules());
     }
 
+    // PUT /api/fraud-rules/{id} (ADMIN)
     @PutMapping("/{id}")
-    public FraudRule update(@PathVariable Long id, @RequestBody FraudRule rule) {
-        return service.updateRule(id, rule);
+    public ResponseEntity<?> updateRule(
+            @PathVariable Long id,
+            @RequestBody FraudRule rule
+    ) {
+        return ResponseEntity.ok(ruleService.updateRule(id, rule));
     }
 }
