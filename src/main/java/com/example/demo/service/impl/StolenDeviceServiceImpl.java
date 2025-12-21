@@ -1,14 +1,14 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.model.StolenDeviceReport;
 import com.example.demo.repository.DeviceOwnershipRecordRepository;
 import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.service.StolenDeviceService;
-import org.springframework.stereotype.Service;
 import java.util.List;
-@Service
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     private final StolenDeviceReportRepository stolenRepo;
@@ -16,31 +16,27 @@ public class StolenDeviceServiceImpl implements StolenDeviceService {
 
     public StolenDeviceServiceImpl(
             StolenDeviceReportRepository stolenRepo,
-            DeviceOwnershipRecordRepository deviceRepo
-    ) {
+            DeviceOwnershipRecordRepository deviceRepo) {
         this.stolenRepo = stolenRepo;
         this.deviceRepo = deviceRepo;
     }
 
     @Override
     public StolenDeviceReport reportStolen(StolenDeviceReport report) {
-        DeviceOwnershipRecord device = deviceRepo
-                .findBySerialNumber(report.getDevice().getSerialNumber())
-                .orElseThrow(ResourceNotFoundException::deviceNotFound);
-
+        DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(report.getSerialNumber())
+                .orElseThrow(NoSuchElementException::new);
         report.setDevice(device);
         return stolenRepo.save(report);
     }
 
     @Override
     public List<StolenDeviceReport> getReportsBySerial(String serialNumber) {
-        return stolenRepo.findByDevice_SerialNumber(serialNumber);
+        return stolenRepo.findBySerialNumber(serialNumber);
     }
 
     @Override
-    public StolenDeviceReport getReportById(Long id) {
-        return stolenRepo.findById(id)
-                .orElseThrow(ResourceNotFoundException::requestNotFound);
+    public Optional<StolenDeviceReport> getReportById(Long id) {
+        return stolenRepo.findById(id);
     }
 
     @Override

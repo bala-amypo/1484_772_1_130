@@ -1,19 +1,14 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.DeviceOwnershipRecord;
-import com.example.demo.model.FraudAlertRecord;
 import com.example.demo.model.WarrantyClaimRecord;
-import com.example.demo.repository.DeviceOwnershipRecordRepository;
-import com.example.demo.repository.FraudAlertRecordRepository;
-import com.example.demo.repository.FraudRuleRepository;
-import com.example.demo.repository.StolenDeviceReportRepository;
-import com.example.demo.repository.WarrantyClaimRecordRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.WarrantyClaimService;
-import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
-@Service
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     private final WarrantyClaimRecordRepository claimRepo;
@@ -27,8 +22,7 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
             DeviceOwnershipRecordRepository deviceRepo,
             StolenDeviceReportRepository stolenRepo,
             FraudAlertRecordRepository alertRepo,
-            FraudRuleRepository ruleRepo
-    ) {
+            FraudRuleRepository ruleRepo) {
         this.claimRepo = claimRepo;
         this.deviceRepo = deviceRepo;
         this.stolenRepo = stolenRepo;
@@ -38,54 +32,39 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     @Override
     public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
-        String serial = claim.getDevice().getSerialNumber();
+        DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(claim.getSerialNumber())
+                .orElseThrow(NoSuchElementException::new);
 
-        DeviceOwnershipRecord device = deviceRepo
-                .findBySerialNumber(serial)
-                .orElseThrow(ResourceNotFoundException::offerNotFound);
+        claim.setDevice(device);
 
         boolean flagged = false;
 
-        if (stolenRepo.existsByDevice_SerialNumber(serial)) flagged = true;
+        if (stolenRepo.existsBySerialNumber(device.getSerialNumber())) flagged = true;
         if (device.getWarrantyExpiration().isBefore(LocalDate.now())) flagged = true;
-        if (claimRepo.existsByDevice_SerialNumberAndClaimReason(serial, claim.getClaimReason()))
+        if (claimRepo.existsBySerialNumberAndClaimReason(device.getSerialNumber(), claim.getClaimReason()))
             flagged = true;
 
-        claim.setDevice(device);
-        claim.setStatus(flagged ? "FLAGGED" : "PENDING");
+        if (flagged) claim.setStatus("FLAGGED");
 
-        WarrantyClaimRecord saved = claimRepo.save(claim);
-
-        if (flagged) {
-            FraudAlertRecord alert = new FraudAlertRecord();
-            alert.setClaim(saved);
-            alert.setAlertType("AUTO_FLAG");
-            alert.setSeverity("HIGH");
-            alert.setMessage("Claim flagged by fraud rules");
-            alertRepo.save(alert);
-        }
-
-        return saved;
+        return claimRepo.save(claim);
     }
 
     @Override
-    public WarrantyClaimRecord updateClaimStatus(Long claimId, String status) {
-        WarrantyClaimRecord claim = claimRepo.findById(claimId)
-                .orElseThrow(ResourceNotFoundException::requestNotFound);
-
+    public WarrantyClaimRecord updateClaimStatus(Long id, String status) {
+        WarrantyClaimRecord claim = claimRepo.findById(id)
+                .orElseThrow(NoSuchElementException::new);
         claim.setStatus(status);
         return claimRepo.save(claim);
     }
 
     @Override
-    public WarrantyClaimRecord getClaimById(Long id) {
-        return claimRepo.findById(id)
-                .orElseThrow(ResourceNotFoundException::requestNotFound);
+    public Optional<WarrantyClaimRecord> getClaimById(Long id) {
+        return claimRepo.findById(id);
     }
 
     @Override
     public List<WarrantyClaimRecord> getClaimsBySerial(String serialNumber) {
-        return claimRepo.findByDevice_SerialNumber(serialNumber);
+        return claimRepo.findBySerialNumber(serialNumber);
     }
 
     @Override

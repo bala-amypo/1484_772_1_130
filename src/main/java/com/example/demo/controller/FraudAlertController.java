@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.FraudAlertRecord;
 import com.example.demo.service.FraudAlertService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -18,36 +16,32 @@ public class FraudAlertController {
     }
 
     @PostMapping
-    public ResponseEntity<FraudAlertRecord> create(@RequestBody FraudAlertRecord alert) {
-        return ResponseEntity.ok(service.createAlert(alert));
+    public FraudAlertRecord create(@RequestBody FraudAlertRecord alert) {
+        return service.createAlert(alert);
     }
 
     @GetMapping
-    public ResponseEntity<List<FraudAlertRecord>> getAll() {
-        return ResponseEntity.ok(service.getAllAlerts());
+    public List<FraudAlertRecord> getAll() {
+        return service.getAllAlerts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FraudAlertRecord> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getAlertById(id));
+    public FraudAlertRecord getById(@PathVariable Long id) {
+        return service.resolveAlert(id);
     }
 
-    @GetMapping("/serial/{serialNumber}")
-    public ResponseEntity<List<FraudAlertRecord>> getBySerial(
-            @PathVariable String serialNumber
-    ) {
-        return ResponseEntity.ok(service.getAlertsBySerial(serialNumber));
+    @GetMapping("/serial/{serial}")
+    public List<FraudAlertRecord> getBySerial(@PathVariable String serial) {
+        return service.getAlertsBySerial(serial);
     }
 
     @GetMapping("/claim/{claimId}")
-    public ResponseEntity<List<FraudAlertRecord>> getByClaim(
-            @PathVariable Long claimId
-    ) {
-        return ResponseEntity.ok(service.getAlertsByClaim(claimId));
+    public List<FraudAlertRecord> getByClaim(@PathVariable Long claimId) {
+        return service.getAlertsByClaim(claimId);
     }
 
     @PutMapping("/{id}/resolve")
-    public ResponseEntity<FraudAlertRecord> resolve(@PathVariable Long id) {
-        return ResponseEntity.ok(service.resolveAlert(id));
+    public FraudAlertRecord resolve(@PathVariable Long id) {
+        return service.resolveAlert(id);
     }
 }

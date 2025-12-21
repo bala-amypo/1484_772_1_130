@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.WarrantyClaimRecord;
 import com.example.demo.service.WarrantyClaimService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -18,32 +16,27 @@ public class WarrantyClaimController {
     }
 
     @PostMapping
-    public ResponseEntity<WarrantyClaimRecord> submit(@RequestBody WarrantyClaimRecord claim) {
-        return ResponseEntity.ok(service.submitClaim(claim));
+    public WarrantyClaimRecord submit(@RequestBody WarrantyClaimRecord record) {
+        return service.submitClaim(record);
     }
 
     @GetMapping
-    public ResponseEntity<List<WarrantyClaimRecord>> getAll() {
-        return ResponseEntity.ok(service.getAllClaims());
+    public List<WarrantyClaimRecord> getAll() {
+        return service.getAllClaims();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WarrantyClaimRecord> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getClaimById(id));
+    public WarrantyClaimRecord getById(@PathVariable Long id) {
+        return service.getClaimById(id).orElse(null);
     }
 
-    @GetMapping("/serial/{serialNumber}")
-    public ResponseEntity<List<WarrantyClaimRecord>> getBySerial(
-            @PathVariable String serialNumber
-    ) {
-        return ResponseEntity.ok(service.getClaimsBySerial(serialNumber));
+    @GetMapping("/serial/{serial}")
+    public List<WarrantyClaimRecord> getBySerial(@PathVariable String serial) {
+        return service.getClaimsBySerial(serial);
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<WarrantyClaimRecord> updateStatus(
-            @PathVariable Long id,
-            @RequestParam String status
-    ) {
-        return ResponseEntity.ok(service.updateClaimStatus(id, status));
+    public WarrantyClaimRecord updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return service.updateClaimStatus(id, status);
     }
 }
