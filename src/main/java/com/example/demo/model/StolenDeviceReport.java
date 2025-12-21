@@ -44,4 +44,21 @@ public class StolenDeviceReport {
     public void setReportedBy(String reportedBy) { this.reportedBy = reportedBy; }
     public void setDetails(String details) { this.details = details; }
     public void setDevice(DeviceOwnershipRecord device) { this.device = device; }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final StolenDeviceReport s = new StolenDeviceReport();
+
+        public Builder id(Long id) { s.id = id; return this; }
+        public Builder reportedBy(String reportedBy) { s.reportedBy = reportedBy; return this; }
+        public Builder details(String details) { s.details = details; return this; }
+        public Builder device(DeviceOwnershipRecord device) { s.device = device; return this; }
+
+        public StolenDeviceReport build() {
+            return s;
+        }
+    }
 }

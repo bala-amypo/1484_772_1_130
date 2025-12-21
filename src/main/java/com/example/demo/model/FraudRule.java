@@ -43,4 +43,22 @@ public class FraudRule {
     public void setRuleType(String ruleType) { this.ruleType = ruleType; }
     public void setDescription(String description) { this.description = description; }
     public void setActive(boolean active) { this.active = active; }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final FraudRule f = new FraudRule();
+
+        public Builder id(Long id) { f.id = id; return this; }
+        public Builder ruleCode(String ruleCode) { f.ruleCode = ruleCode; return this; }
+        public Builder ruleType(String ruleType) { f.ruleType = ruleType; return this; }
+        public Builder description(String description) { f.description = description; return this; }
+        public Builder active(boolean active) { f.active = active; return this; }
+
+        public FraudRule build() {
+            return f;
+        }
+    }
 }
