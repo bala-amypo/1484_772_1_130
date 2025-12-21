@@ -4,42 +4,47 @@ import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.service.DeviceOwnershipService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/devices")
 public class DeviceOwnershipController {
 
-    private final DeviceOwnershipService service;
+    private final DeviceOwnershipService deviceService;
 
-    public DeviceOwnershipController(DeviceOwnershipService service) {
-        this.service = service;
+    public DeviceOwnershipController(DeviceOwnershipService deviceService) {
+        this.deviceService = deviceService;
     }
 
+    // POST /api/devices (ADMIN)
     @PostMapping
-    public DeviceOwnershipRecord register(@RequestBody DeviceOwnershipRecord record) {
-        return service.registerDevice(record);
+    public ResponseEntity<?> registerDevice(@RequestBody DeviceOwnershipRecord device) {
+        return ResponseEntity.status(201).body(deviceService.registerDevice(device));
     }
 
+    // GET /api/devices
     @GetMapping
-    public List<DeviceOwnershipRecord> getAll() {
-        return service.getAllDevices();
+    public ResponseEntity<?> getAllDevices() {
+        return ResponseEntity.ok(deviceService.getAllDevices());
     }
 
+    // GET /api/devices/{id}
     @GetMapping("/{id}")
-    public DeviceOwnershipRecord getById(@PathVariable Long id) {
-        return service.updateDeviceStatus(id, true);
+    public ResponseEntity<?> getDeviceById(@PathVariable Long id) {
+        return ResponseEntity.ok(deviceService.updateDeviceStatus(id, true));
     }
 
-    @GetMapping("/serial/{serial}")
-    public ResponseEntity<?> getBySerial(@PathVariable String serial) {
-        return service.getBySerial(serial)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // GET /api/devices/serial/{serialNumber}
+    @GetMapping("/serial/{serialNumber}")
+    public ResponseEntity<?> getBySerial(@PathVariable String serialNumber) {
+        return ResponseEntity.ok(deviceService.getBySerial(serialNumber));
     }
 
+    // PUT /api/devices/{id}/status (ADMIN)
     @PutMapping("/{id}/status")
-    public DeviceOwnershipRecord updateStatus(@PathVariable Long id, @RequestParam boolean active) {
-        return service.updateDeviceStatus(id, active);
+    public ResponseEntity<?> updateStatus(
+            @PathVariable Long id,
+            @RequestParam boolean active
+    ) {
+        return ResponseEntity.ok(deviceService.updateDeviceStatus(id, active));
     }
 }

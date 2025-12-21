@@ -4,14 +4,12 @@ import com.example.demo.model.DeviceOwnershipRecord;
 import com.example.demo.model.WarrantyClaimRecord;
 import com.example.demo.repository.*;
 import com.example.demo.service.WarrantyClaimService;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 
-
-@Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     private final WarrantyClaimRecordRepository claimRepo;
@@ -25,7 +23,8 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
             DeviceOwnershipRecordRepository deviceRepo,
             StolenDeviceReportRepository stolenRepo,
             FraudAlertRecordRepository alertRepo,
-            FraudRuleRepository ruleRepo) {
+            FraudRuleRepository ruleRepo
+    ) {
         this.claimRepo = claimRepo;
         this.deviceRepo = deviceRepo;
         this.stolenRepo = stolenRepo;
@@ -35,27 +34,36 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
 
     @Override
     public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
-        DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(claim.getSerialNumber())
-                .orElseThrow(NoSuchElementException::new);
 
-        claim.setDevice(device);
+        DeviceOwnershipRecord device = deviceRepo.findBySerialNumber(claim.getSerialNumber())
+                .orElseThrow(() -> new NoSuchElementException("Offer not found"));
 
         boolean flagged = false;
 
-        if (stolenRepo.existsBySerialNumber(device.getSerialNumber())) flagged = true;
-        if (device.getWarrantyExpiration().isBefore(LocalDate.now())) flagged = true;
-        if (claimRepo.existsBySerialNumberAndClaimReason(device.getSerialNumber(), claim.getClaimReason()))
+        if (stolenRepo.existsBySerialNumber(claim.getSerialNumber())) {
             flagged = true;
+        }
 
-        if (flagged) claim.setStatus("FLAGGED");
+        if (device.getWarrantyExpiration().isBefore(LocalDate.now())) {
+            flagged = true;
+        }
+
+        if (claimRepo.existsBySerialNumberAndClaimReason(
+                claim.getSerialNumber(), claim.getClaimReason())) {
+            flagged = true;
+        }
+
+        if (flagged) {
+            claim.setStatus("FLAGGED");
+        }
 
         return claimRepo.save(claim);
     }
 
     @Override
-    public WarrantyClaimRecord updateClaimStatus(Long id, String status) {
-        WarrantyClaimRecord claim = claimRepo.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+    public WarrantyClaimRecord updateClaimStatus(Long claimId, String status) {
+        WarrantyClaimRecord claim = claimRepo.findById(claimId)
+                .orElseThrow(() -> new NoSuchElementException("Request not found"));
         claim.setStatus(status);
         return claimRepo.save(claim);
     }

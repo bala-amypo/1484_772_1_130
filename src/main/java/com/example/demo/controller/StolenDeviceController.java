@@ -2,36 +2,40 @@ package com.example.demo.controller;
 
 import com.example.demo.model.StolenDeviceReport;
 import com.example.demo.service.StolenDeviceService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/stolen-devices")
 public class StolenDeviceController {
 
-    private final StolenDeviceService service;
+    private final StolenDeviceService stolenService;
 
-    public StolenDeviceController(StolenDeviceService service) {
-        this.service = service;
+    public StolenDeviceController(StolenDeviceService stolenService) {
+        this.stolenService = stolenService;
     }
 
+    // POST /api/stolen-devices (ADMIN)
     @PostMapping
-    public StolenDeviceReport report(@RequestBody StolenDeviceReport report) {
-        return service.reportStolen(report);
+    public ResponseEntity<?> reportStolen(@RequestBody StolenDeviceReport report) {
+        return ResponseEntity.status(201).body(stolenService.reportStolen(report));
     }
 
+    // GET /api/stolen-devices
     @GetMapping
-    public List<StolenDeviceReport> getAll() {
-        return service.getAllReports();
+    public ResponseEntity<?> getAllReports() {
+        return ResponseEntity.ok(stolenService.getAllReports());
     }
 
+    // GET /api/stolen-devices/{id}
     @GetMapping("/{id}")
-    public StolenDeviceReport getById(@PathVariable Long id) {
-        return service.getReportById(id).orElse(null);
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(stolenService.getReportById(id));
     }
 
-    @GetMapping("/serial/{serial}")
-    public List<StolenDeviceReport> getBySerial(@PathVariable String serial) {
-        return service.getReportsBySerial(serial);
+    // GET /api/stolen-devices/serial/{serialNumber}
+    @GetMapping("/serial/{serialNumber}")
+    public ResponseEntity<?> getBySerial(@PathVariable String serialNumber) {
+        return ResponseEntity.ok(stolenService.getReportsBySerial(serialNumber));
     }
 }
