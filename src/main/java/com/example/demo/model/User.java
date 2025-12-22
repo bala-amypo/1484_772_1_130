@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +29,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -44,7 +42,6 @@ public class User {
 
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<FraudAlertRecord> alerts = new HashSet<>();
 

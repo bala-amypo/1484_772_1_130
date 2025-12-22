@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,12 +36,10 @@ public class FraudAlertRecord {
 
     private Boolean resolved = false;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "claim_id_fk")
     private WarrantyClaimRecord claim;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

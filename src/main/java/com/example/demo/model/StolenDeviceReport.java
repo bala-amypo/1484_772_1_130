@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +31,6 @@ public class StolenDeviceReport {
 
     private String details;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "device_id")
     private DeviceOwnershipRecord device;
