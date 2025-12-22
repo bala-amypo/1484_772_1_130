@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,12 +38,10 @@ public class WarrantyClaimRecord {
 
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "device_id")
     private DeviceOwnershipRecord device;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
     private Set<FraudAlertRecord> alerts = new HashSet<>();
 
