@@ -12,16 +12,31 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles")
     private Set<String> roles = new HashSet<>();
 
-    // getters & setters
+    
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final User u = new User();
+
+        public Builder id(Long id) { u.id = id; return this; }
+        public Builder email(String email) { u.email = email; return this; }
+        public Builder password(String password) { u.password = password; return this; }
+        public Builder roles(Set<String> roles) { u.roles = roles; return this; }
+
+        public User build() { return u; }
+    }
+
+    
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
