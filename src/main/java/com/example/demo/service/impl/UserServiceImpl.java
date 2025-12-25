@@ -2,8 +2,8 @@ package com.example.demo.service.impl;
 
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new IllegalArgumentException("Email exists");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);

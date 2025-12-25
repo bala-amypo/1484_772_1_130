@@ -6,9 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.dto.AuthRequest;
-import com.example.demo.dto.AuthResponse;
-import com.example.demo.dto.RegisterRequest;
+import com.example.demo.dto.*;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
@@ -57,14 +55,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
-        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
-        if (optionalUser.isEmpty()) {
+        Optional<User> opt = userRepository.findByEmail(request.getEmail());
+        if (opt.isEmpty()) {
             return ResponseEntity.status(401).build();
         }
 
-        User user = optionalUser.get();
+        User user = opt.get();
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(
+                request.getPassword(), user.getPassword())) {
             return ResponseEntity.status(401).build();
         }
 
