@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StolenDeviceReportRepository {
-    StolenDeviceReport save(StolenDeviceReport r);
+    boolean existsBySerialNumber(String s);
+    List<StolenDeviceReport> findBySerialNumber(String s);
     List<StolenDeviceReport> findAll();
-    List<StolenDeviceReport> findBySerialNumber(String serial);
-    Optional<StolenDeviceReport> findById(Long id);
-    boolean existsBySerialNumber(String serial);
+    StolenDeviceReport save(StolenDeviceReport s);
 }

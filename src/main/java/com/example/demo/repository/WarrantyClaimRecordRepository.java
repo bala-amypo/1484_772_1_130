@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WarrantyClaimRecordRepository {
-    WarrantyClaimRecord save(WarrantyClaimRecord r);
+    boolean existsBySerialNumberAndClaimReason(String s, String r);
     Optional<WarrantyClaimRecord> findById(Long id);
+    List<WarrantyClaimRecord> findBySerialNumber(String s);
     List<WarrantyClaimRecord> findAll();
-    boolean existsBySerialNumberAndClaimReason(String serial, String reason);
-    List<WarrantyClaimRecord> findBySerialNumber(String serial);
+    WarrantyClaimRecord save(WarrantyClaimRecord c);
 }

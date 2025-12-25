@@ -1,36 +1,25 @@
 package com.example.demo.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.filter.GenericFilterBean;
-
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.util.Set;
 
-public class JwtAuthenticationFilter extends GenericFilterBean {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final CustomUserDetailsService userDetailsService;
+public class JwtAuthenticationFilter {
+    private final JwtTokenProvider provider;
+    private final CustomUserDetailsService uds;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService userDetailsService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userDetailsService = userDetailsService;
+    public JwtAuthenticationFilter(JwtTokenProvider p, CustomUserDetailsService u){
+        this.provider=p; this.uds=u;
     }
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        String header = req.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            if (jwtTokenProvider.validateToken(token)) {
-                String email = jwtTokenProvider.getEmail(token);
-                Set<String> roles = jwtTokenProvider.getRoles(token);
-                // In a real app, set SecurityContext here. For tests, just proceed.
-            }
+    public void doFilter(ServletRequest r, ServletResponse s, FilterChain c)
+            throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) r;
+        String h = req.getHeader("Authorization");
+        if(h!=null && h.startsWith("Bearer ")){
+            String t = h.substring(7);
+            provider.validateToken(t);
         }
-        chain.doFilter(request, response);
+        c.doFilter(r,s);
     }
 }

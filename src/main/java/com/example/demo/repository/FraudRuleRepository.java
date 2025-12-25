@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FraudRuleRepository {
-    FraudRule save(FraudRule r);
-    Optional<FraudRule> findByRuleCode(String code);
+    Optional<FraudRule> findByRuleCode(String c);
     List<FraudRule> findByActiveTrue();
+    FraudRule save(FraudRule r);
 }

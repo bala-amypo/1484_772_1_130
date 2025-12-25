@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FraudAlertRecordRepository {
-    FraudAlertRecord save(FraudAlertRecord r);
     Optional<FraudAlertRecord> findById(Long id);
-    List<FraudAlertRecord> findByClaimId(Long claimId);
+    List<FraudAlertRecord> findByClaimId(Long id);
+    FraudAlertRecord save(FraudAlertRecord f);
 }

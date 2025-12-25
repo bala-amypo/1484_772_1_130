@@ -1,62 +1,26 @@
 package com.example.demo.security;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class JwtTokenProvider {
-    // Very simple, non-secure token structure for tests: base64 of "id|email|role1,role2"
 
-    public String createToken(Long userId, String email, Set<String> roles) {
-        if (roles == null) roles = Collections.emptySet();
-        String data = (userId == null ? 0L : userId) + "|" + (email == null ? "" : email) + "|" + String.join(",", roles);
-        return Base64.getEncoder().encodeToString(data.getBytes(StandardCharsets.UTF_8));
+    public String createToken(Long id, String email, Set<String> roles){
+        return id + "|" + email + "|" + String.join(",", roles);
     }
 
-    public boolean validateToken(String token) {
-        try {
-            String decoded = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
-            return decoded.split("\\|").length >= 3;
-        } catch (Exception e) {
-            return false;
-        }
+    public boolean validateToken(String token){
+        return token != null && token.contains("|");
     }
 
-    public String getEmail(String token) {
-        try {
-            String decoded = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
-            String[] parts = decoded.split("\\|");
-            return parts.length >= 2 ? parts[1] : null;
-        } catch (Exception e) {
-            return null;
-        }
+    public String getEmail(String token){
+        return token.split("\\|")[1];
     }
 
-    public Set<String> getRoles(String token) {
-        try {
-            String decoded = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
-            String[] parts = decoded.split("\\|");
-            if (parts.length >= 3 && !parts[2].isEmpty()) {
-                String[] rs = parts[2].split(",");
-                Set<String> out = new HashSet<>();
-                for (String r : rs) out.add(r);
-                return out;
-            }
-            return new HashSet<>();
-        } catch (Exception e) {
-            return new HashSet<>();
-        }
+    public Set<String> getRoles(String token){
+        return Set.of(token.split("\\|")[2].split(","));
     }
 
-    public Long getUserId(String token) {
-        try {
-            String decoded = new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
-            String[] parts = decoded.split("\\|");
-            return Long.valueOf(parts[0]);
-        } catch (Exception e) {
-            return null;
-        }
+    public Long getUserId(String token){
+        return Long.valueOf(token.split("\\|")[0]);
     }
 }
