@@ -8,31 +8,29 @@ public class DeviceOwnershipRecord {
     private String ownerName;
     private String ownerEmail;
     private LocalDate warrantyExpiration;
-    private Boolean active;
+    private Boolean active = true;
 
-    public static Builder builder() { return new Builder(); }
+    public static Builder builder(){ return new Builder(); }
 
     public static class Builder {
         private final DeviceOwnershipRecord d = new DeviceOwnershipRecord();
-        public Builder id(Long id){ d.setId(id); return this; }
-        public Builder serialNumber(String s){ d.setSerialNumber(s); return this; }
-        public Builder ownerName(String s){ d.setOwnerName(s); return this; }
-        public Builder ownerEmail(String s){ d.setOwnerEmail(s); return this; }
-        public Builder warrantyExpiration(LocalDate dt){ d.setWarrantyExpiration(dt); return this; }
-        public Builder active(Boolean a){ d.setActive(a); return this; }
+        public Builder id(Long id){ d.id=id; return this; }
+        public Builder serialNumber(String s){ d.serialNumber=s; return this; }
+        public Builder ownerName(String o){ d.ownerName=o; return this; }
+        public Builder ownerEmail(String e){ d.ownerEmail=e; return this; }
+        public Builder warrantyExpiration(LocalDate w){ d.warrantyExpiration=w; return this; }
+        public Builder active(Boolean a){ d.active=a; return this; }
         public DeviceOwnershipRecord build(){ return d; }
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getSerialNumber() { return serialNumber; }
-    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
-    public String getOwnerName() { return ownerName; }
-    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
-    public String getOwnerEmail() { return ownerEmail; }
-    public void setOwnerEmail(String ownerEmail) { this.ownerEmail = ownerEmail; }
-    public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
-    public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
+    public Long getId(){ return id; }
+    public void setId(Long id){ this.id=id; }
+
+    public String getSerialNumber(){ return serialNumber; }
+    public void setSerialNumber(String s){ this.serialNumber=s; }
+
+    public Boolean getActive(){ return active; }
+    public void setActive(Boolean a){ this.active=a; }
+
+    public LocalDate getWarrantyExpiration(){ return warrantyExpiration; }
 }
