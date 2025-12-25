@@ -1,33 +1,38 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.FraudRule;
-import com.example.demo.repository.FraudRuleRepository;
-import com.example.demo.service.FraudRulesService;
-
 import java.util.List;
 import java.util.Optional;
 
-public class FraudRuleServiceImpl implements FraudRulesService {
-    private final FraudRuleRepository repo;
+import org.springframework.stereotype.Service;
 
-    public FraudRuleServiceImpl(FraudRuleRepository repo) {
-        this.repo = repo;
+import com.example.demo.model.FraudRule;
+import com.example.demo.repository.FraudRuleRepository;
+import com.example.demo.service.FraudRuleService;
+
+@Service
+public class FraudRuleServiceImpl implements FraudRuleService {
+
+    private final FraudRuleRepository ruleRepo;
+
+    public FraudRuleServiceImpl(FraudRuleRepository ruleRepo) {
+        this.ruleRepo = ruleRepo;
     }
 
     @Override
-    public FraudRule createRule(FraudRule r) {
-        Optional<FraudRule> ex = repo.findByRuleCode(r.getRuleCode());
-        if (ex.isPresent()) throw new IllegalArgumentException("duplicate rule");
-        return repo.save(r);
+    public FraudRule createRule(FraudRule rule) {
+        if (ruleRepo.findByRuleCode(rule.getRuleCode()).isPresent()) {
+            throw new IllegalArgumentException("Duplicate rule code");
+        }
+        return ruleRepo.save(rule);
     }
 
     @Override
     public List<FraudRule> getActiveRules() {
-        return repo.findByActiveTrue();
+        return ruleRepo.findByActiveTrue();
     }
 
     @Override
-    public Optional<FraudRule> getRuleByCode(String code) {
-        return repo.findByRuleCode(code);
+    public Optional<FraudRule> getRuleByCode(String ruleCode) {
+        return ruleRepo.findByRuleCode(ruleCode);
     }
 }

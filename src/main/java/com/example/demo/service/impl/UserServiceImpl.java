@@ -1,60 +1,39 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.exception.InvalidRequestException;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
-
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User registerUser(User user) {
-
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new InvalidRequestException("Email already in use");
+    public User register(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
         }
-
-        if (user.getRoles() == null || user.getRoles().isEmpty()) {
-            user.setRoles(Set.of("USER"));
-        }
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public User loginUser(String email, String password) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
-
-        if (!user.getPassword().equals(password)) {
-            throw new InvalidRequestException("Invalid input");
-        }
-
-        return user;
-    }
-
-    @Override
-    public User getById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
-    }
-
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("User not found"));
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

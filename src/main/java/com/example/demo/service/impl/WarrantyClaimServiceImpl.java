@@ -1,8 +1,13 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import com.example.demo.model.DeviceOwnershipRecord;
-import com.example.demo.model.FraudAlertRecord;
-import com.example.demo.model.FraudRule;
 import com.example.demo.model.WarrantyClaimRecord;
 import com.example.demo.repository.DeviceOwnershipRecordRepository;
 import com.example.demo.repository.FraudAlertRecordRepository;
@@ -11,23 +16,22 @@ import com.example.demo.repository.StolenDeviceReportRepository;
 import com.example.demo.repository.WarrantyClaimRecordRepository;
 import com.example.demo.service.WarrantyClaimService;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
+@Service
 public class WarrantyClaimServiceImpl implements WarrantyClaimService {
+
     private final WarrantyClaimRecordRepository claimRepo;
     private final DeviceOwnershipRecordRepository deviceRepo;
     private final StolenDeviceReportRepository stolenRepo;
     private final FraudAlertRecordRepository alertRepo;
     private final FraudRuleRepository ruleRepo;
 
-    public WarrantyClaimServiceImpl(WarrantyClaimRecordRepository claimRepo,
-                                    DeviceOwnershipRecordRepository deviceRepo,
-                                    StolenDeviceReportRepository stolenRepo,
-                                    FraudAlertRecordRepository alertRepo,
-                                    FraudRuleRepository ruleRepo) {
+    public WarrantyClaimServiceImpl(
+            WarrantyClaimRecordRepository claimRepo,
+            DeviceOwnershipRecordRepository deviceRepo,
+            StolenDeviceReportRepository stolenRepo,
+            FraudAlertRecordRepository alertRepo,
+            FraudRuleRepository ruleRepo
+    ) {
         this.claimRepo = claimRepo;
         this.deviceRepo = deviceRepo;
         this.stolenRepo = stolenRepo;
@@ -36,31 +40,38 @@ public class WarrantyClaimServiceImpl implements WarrantyClaimService {
     }
 
     @Override
-    public WarrantyClaimRecord submitClaim(WarrantyClaimRecord r) {
-        Optional<DeviceOwnershipRecord> deviceOpt = deviceRepo.findBySerialNumber(r.getSerialNumber());
-        DeviceOwnershipRecord d = deviceOpt.orElseThrow(NoSuchElementException::new);
+    public WarrantyClaimRecord submitClaim(WarrantyClaimRecord claim) {
 
-        boolean flag = false;
-        if (claimRepo.existsBySerialNumberAndClaimReason(r.getSerialNumber(), r.getClaimReason())) {
-            flag = true;
+        DeviceOwnershipRecord device = deviceRepo
+                .findBySerialNumber(claim.getSerialNumber())
+                .orElseThrow(NoSuchElementException::new);
+
+        boolean flagged = false;
+
+        if (claimRepo.existsBySerialNumberAndClaimReason(
+                claim.getSerialNumber(), claim.getClaimReason())) {
+            flagged = true;
         }
-        if (d.getWarrantyExpiration() != null && d.getWarrantyExpiration().isBefore(LocalDate.now())) {
-            flag = true;
+
+        if (device.getWarrantyExpiration() != null &&
+                device.getWarrantyExpiration().isBefore(LocalDate.now())) {
+            flagged = true;
         }
-        if (stolenRepo.existsBySerialNumber(r.getSerialNumber())) {
-            flag = true;
+
+        if (stolenRepo.existsBySerialNumber(claim.getSerialNumber())) {
+            flagged = true;
         }
-        if (flag) {
-            r.setStatus("FLAGGED");
-        }
-        return claimRepo.save(r);
+
+        claim.setStatus(flagged ? "FLAGGED" : "PENDING");
+        return claimRepo.save(claim);
     }
 
     @Override
     public WarrantyClaimRecord updateClaimStatus(Long id, String status) {
-        WarrantyClaimRecord c = claimRepo.findById(id).orElseThrow(NoSuchElementException::new);
-        c.setStatus(status);
-        return claimRepo.save(c);
+        WarrantyClaimRecord record = claimRepo.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        record.setStatus(status);
+        return claimRepo.save(record);
     }
 
     @Override
