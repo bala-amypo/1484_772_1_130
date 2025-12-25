@@ -1,9 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.FraudRule;
-import com.example.demo.service.FraudRuleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.model.FraudRule;
+import com.example.demo.service.FraudRuleService;
 
 @RestController
 @RequestMapping("/api/fraud-rules")
@@ -16,18 +17,11 @@ public class FraudRuleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createRule(@RequestBody FraudRule rule) {
-        return ResponseEntity.status(201).body(ruleService.createRule(rule));
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getAllRules() {
-        return ResponseEntity.ok(ruleService.getAllRules());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(ruleService.getRuleByCode(id.toString()));
+    public ResponseEntity<?> createRule(
+            @RequestBody FraudRule rule
+    ) {
+        return ResponseEntity.status(201)
+                .body(ruleService.createRule(rule));
     }
 
     @GetMapping("/active")
@@ -35,11 +29,12 @@ public class FraudRuleController {
         return ResponseEntity.ok(ruleService.getActiveRules());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateRule(
-            @PathVariable Long id,
-            @RequestBody FraudRule rule
+    @GetMapping("/{code}")
+    public ResponseEntity<?> getRuleByCode(
+            @PathVariable String code
     ) {
-        return ResponseEntity.ok(ruleService.updateRule(id, rule));
+        return ResponseEntity.ok(
+                ruleService.getRuleByCode(code)
+        );
     }
 }

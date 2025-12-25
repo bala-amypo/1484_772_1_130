@@ -1,54 +1,79 @@
 package com.example.demo.controller;
 
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.dto.AuthRequest;
 import com.example.demo.dto.AuthResponse;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.security.JwtTokenProvider;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider jwtTokenProvider
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public ResponseEntity<?> register(RegisterRequest request) {
-        Optional<User> existing = userRepository.findByEmail(request.getEmail());
-        if (existing.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return ResponseEntity.status(409).build();
         }
-        User u = User.builder()
-                .email(request.getEmail())
-                .name(request.getName())
-                .roles(request.getRoles())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
-        u = userRepository.save(u);
-        String token = jwtTokenProvider.createToken(u.getId() == null ? 0L : u.getId(), u.getEmail(), u.getRoles());
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRoles(request.getRoles());
+
+        User saved = userRepository.save(user);
+
+        String token = jwtTokenProvider.createToken(
+                saved.getId(),
+                saved.getEmail(),
+                saved.getRoles()
+        );
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    public ResponseEntity<?> login(AuthRequest request) {
-        Optional<User> opt = userRepository.findByEmail(request.getEmail());
-        if (opt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.status(401).build();
         }
-        User u = opt.get();
-        if (!passwordEncoder.matches(request.getPassword(), u.getPassword())) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return ResponseEntity.status(401).build();
         }
-        String token = jwtTokenProvider.createToken(u.getId() == null ? 0L : u.getId(), u.getEmail(), u.getRoles());
+
+        String token = jwtTokenProvider.createToken(
+                user.getId(),
+                user.getEmail(),
+                user.getRoles()
+        );
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
