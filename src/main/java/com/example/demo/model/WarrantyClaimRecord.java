@@ -1,67 +1,27 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-@Entity
-@Table(name = "warranty_claim_records")
-@Getter
-@Setter
-@NoArgsConstructor
 public class WarrantyClaimRecord {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String serialNumber;
-
-    @Column(nullable = false)
-    private String claimantName;
-
-    private String claimantEmail;
-
-    @Column(nullable = false)
     private String claimReason;
-
-    private LocalDateTime submittedAt;
-
-    @Column(nullable = false)
     private String status = "PENDING";
 
-    private LocalDateTime createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "device_id")
-    private DeviceOwnershipRecord device;
-
-    @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL)
-    private Set<FraudAlertRecord> alerts = new HashSet<>();
-
-    public WarrantyClaimRecord(
-            String serialNumber,
-            String claimantName,
-            String claimReason
-    ) {
-        this.serialNumber = serialNumber;
-        this.claimantName = claimantName;
-        this.claimReason = claimReason;
-        this.status = "PENDING";
+    public static Builder builder(){ return new Builder(); }
+    public static class Builder {
+        private final WarrantyClaimRecord c = new WarrantyClaimRecord();
+        public Builder id(Long id){ c.setId(id); return this; }
+        public Builder serialNumber(String s){ c.setSerialNumber(s); return this; }
+        public Builder claimReason(String s){ c.setClaimReason(s); return this; }
+        public Builder status(String s){ c.setStatus(s); return this; }
+        public WarrantyClaimRecord build(){ return c; }
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.submittedAt = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-        if (status == null) {
-            status = "PENDING";
-        }
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public String getClaimReason() { return claimReason; }
+    public void setClaimReason(String claimReason) { this.claimReason = claimReason; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

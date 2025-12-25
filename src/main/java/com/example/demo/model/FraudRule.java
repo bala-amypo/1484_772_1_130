@@ -1,49 +1,31 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
-
-@Entity
-@Table(
-        name = "fraud_rules",
-        uniqueConstraints = @UniqueConstraint(columnNames = "ruleCode")
-)
-@Getter
-@Setter
-@NoArgsConstructor
 public class FraudRule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String ruleCode;
-
-    @Column(nullable = false)
     private String ruleType;
-
     private String description;
+    private Boolean active;
 
-    private Boolean active = true;
-
-    private LocalDateTime createdAt;
-
-    public FraudRule(String ruleCode, String ruleType) {
-        this.ruleCode = ruleCode;
-        this.ruleType = ruleType;
-        this.active = true;
+    public static Builder builder(){ return new Builder(); }
+    public static class Builder {
+        private final FraudRule r = new FraudRule();
+        public Builder id(Long id){ r.setId(id); return this; }
+        public Builder ruleCode(String s){ r.setRuleCode(s); return this; }
+        public Builder ruleType(String s){ r.setRuleType(s); return this; }
+        public Builder description(String s){ r.setDescription(s); return this; }
+        public Builder active(Boolean b){ r.setActive(b); return this; }
+        public FraudRule build(){ return r; }
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (active == null) {
-            active = true;
-        }
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getRuleCode() { return ruleCode; }
+    public void setRuleCode(String ruleCode) { this.ruleCode = ruleCode; }
+    public String getRuleType() { return ruleType; }
+    public void setRuleType(String ruleType) { this.ruleType = ruleType; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 }

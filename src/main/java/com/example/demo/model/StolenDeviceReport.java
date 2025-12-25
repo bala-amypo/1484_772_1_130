@@ -1,47 +1,19 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
-
-@Entity
-@Table(
-        name = "stolen_device_reports",
-        uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
-)
-@Getter
-@Setter
-@NoArgsConstructor
 public class StolenDeviceReport {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String serialNumber;
 
-    @Column(nullable = false)
-    private String reportedBy;
-
-    private LocalDateTime reportDate;
-
-    private String details;
-
-    @ManyToOne
-    @JoinColumn(name = "device_id")
-    private DeviceOwnershipRecord device;
-
-    public StolenDeviceReport(String serialNumber, String reportedBy) {
-        this.serialNumber = serialNumber;
-        this.reportedBy = reportedBy;
+    public static Builder builder(){ return new Builder(); }
+    public static class Builder {
+        private final StolenDeviceReport s = new StolenDeviceReport();
+        public Builder id(Long id){ s.setId(id); return this; }
+        public Builder serialNumber(String ser){ s.setSerialNumber(ser); return this; }
+        public StolenDeviceReport build(){ return s; }
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.reportDate = LocalDateTime.now();
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
 }

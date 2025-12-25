@@ -1,66 +1,38 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-@Entity
-@Table(
-        name = "device_ownership_records",
-        uniqueConstraints = @UniqueConstraint(columnNames = "serialNumber")
-)
-@Getter
-@Setter
-@NoArgsConstructor
 public class DeviceOwnershipRecord {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String serialNumber;
-
-    @Column(nullable = false)
     private String ownerName;
-
     private String ownerEmail;
-
-    private LocalDate purchaseDate;
-
-    @Column(nullable = false)
     private LocalDate warrantyExpiration;
+    private Boolean active;
 
-    private Boolean active = true;
+    public static Builder builder() { return new Builder(); }
 
-    private LocalDateTime createdAt;
-
-   
-    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-    private Set<WarrantyClaimRecord> claims = new HashSet<>();
-
-    
-    @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
-    private Set<StolenDeviceReport> stolenReports = new HashSet<>();
-
-    public DeviceOwnershipRecord(String serialNumber, String ownerName, LocalDate warrantyExpiration) {
-        this.serialNumber = serialNumber;
-        this.ownerName = ownerName;
-        this.warrantyExpiration = warrantyExpiration;
-        this.active = true;
+    public static class Builder {
+        private final DeviceOwnershipRecord d = new DeviceOwnershipRecord();
+        public Builder id(Long id){ d.setId(id); return this; }
+        public Builder serialNumber(String s){ d.setSerialNumber(s); return this; }
+        public Builder ownerName(String s){ d.setOwnerName(s); return this; }
+        public Builder ownerEmail(String s){ d.setOwnerEmail(s); return this; }
+        public Builder warrantyExpiration(LocalDate dt){ d.setWarrantyExpiration(dt); return this; }
+        public Builder active(Boolean a){ d.setActive(a); return this; }
+        public DeviceOwnershipRecord build(){ return d; }
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (active == null) {
-            active = true;
-        }
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
+    public String getOwnerEmail() { return ownerEmail; }
+    public void setOwnerEmail(String ownerEmail) { this.ownerEmail = ownerEmail; }
+    public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
+    public void setWarrantyExpiration(LocalDate warrantyExpiration) { this.warrantyExpiration = warrantyExpiration; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 }

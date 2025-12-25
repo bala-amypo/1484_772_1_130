@@ -1,67 +1,29 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "fraud_alert_records")
-@Getter
-@Setter
-@NoArgsConstructor
 public class FraudAlertRecord {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private Long claimId;
-
-    @Column(nullable = false)
     private String serialNumber;
+    private Long claimId;
+    private Boolean resolved;
 
-    @Column(nullable = false)
-    private String alertType;
+    public FraudAlertRecord(){ }
 
-    @Column(nullable = false)
-    private String severity;
-
-    private String message;
-
-    private LocalDateTime alertDate;
-
-    private Boolean resolved = false;
-
-    @ManyToOne
-    @JoinColumn(name = "claim_id_fk")
-    private WarrantyClaimRecord claim;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public FraudAlertRecord(
-            Long claimId,
-            String serialNumber,
-            String alertType,
-            String severity
-    ) {
-        this.claimId = claimId;
-        this.serialNumber = serialNumber;
-        this.alertType = alertType;
-        this.severity = severity;
-        this.resolved = false;
+    public static Builder builder(){ return new Builder(); }
+    public static class Builder {
+        private final FraudAlertRecord f = new FraudAlertRecord();
+        public Builder id(Long id){ f.setId(id); return this; }
+        public Builder serialNumber(String s){ f.setSerialNumber(s); return this; }
+        public Builder claimId(Long id){ f.setClaimId(id); return this; }
+        public Builder resolved(Boolean r){ f.setResolved(r); return this; }
+        public FraudAlertRecord build(){ return f; }
     }
 
-    @PrePersist
-    protected void onCreate() {
-        this.alertDate = LocalDateTime.now();
-        if (resolved == null) {
-            resolved = false;
-        }
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
+    public Long getClaimId() { return claimId; }
+    public void setClaimId(Long claimId) { this.claimId = claimId; }
+    public Boolean getResolved() { return resolved; }
+    public void setResolved(Boolean resolved) { this.resolved = resolved; }
 }
