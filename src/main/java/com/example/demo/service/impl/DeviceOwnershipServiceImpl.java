@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -22,7 +23,9 @@ public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
     public DeviceOwnershipRecord registerDevice(DeviceOwnershipRecord device) {
 
         if (repository.existsBySerialNumber(device.getSerialNumber())) {
-            throw new RuntimeException("Device already exists with this serial number");
+            // ✅ FIX #1: expected by test7
+            throw new IllegalArgumentException(
+                    "Device already exists with this serial number");
         }
 
         return repository.save(device);
@@ -42,9 +45,12 @@ public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
     public DeviceOwnershipRecord updateDeviceStatus(Long id, boolean active) {
 
         DeviceOwnershipRecord device = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Device not found with id: " + id));
+                // ✅ FIX #2: expected by test11
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "Device not found with id: " + id));
 
         device.setActive(active);
-        return repository.save(device); 
+        return repository.save(device);
     }
 }
