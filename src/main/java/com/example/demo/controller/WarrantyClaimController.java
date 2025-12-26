@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,38 +19,47 @@ public class WarrantyClaimController {
         this.claimService = claimService;
     }
 
+    // ✅ SUBMIT WARRANTY CLAIM
     @PostMapping
-    public ResponseEntity<?> submitClaim(
-            @RequestBody WarrantyClaimRecord claim
-    ) {
-        return ResponseEntity.status(201)
+    public ResponseEntity<WarrantyClaimRecord> submitClaim(
+            @RequestBody WarrantyClaimRecord claim) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(claimService.submitClaim(claim));
     }
 
+    // ✅ UPDATE CLAIM STATUS
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateClaimStatus(
+    public ResponseEntity<WarrantyClaimRecord> updateClaimStatus(
             @PathVariable Long id,
-            @RequestParam String status
-    ) {
+            @RequestParam String status) {
+
         return ResponseEntity.ok(
                 claimService.updateClaimStatus(id, status)
         );
     }
 
+    // ✅ GET CLAIM BY ID (NO OPTIONAL LEAK)
     @GetMapping("/{id}")
-    public ResponseEntity<?> getClaimById(@PathVariable Long id) {
-        return ResponseEntity.ok(claimService.getClaimById(id));
+    public ResponseEntity<WarrantyClaimRecord> getClaimById(
+            @PathVariable Long id) {
+
+        return claimService.getClaimById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // ✅ GET ALL CLAIMS
     @GetMapping
-    public ResponseEntity<?> getAllClaims() {
+    public ResponseEntity<List<WarrantyClaimRecord>> getAllClaims() {
         return ResponseEntity.ok(claimService.getAllClaims());
     }
 
+    // ✅ GET CLAIMS BY SERIAL
     @GetMapping("/serial/{serial}")
-    public ResponseEntity<?> getClaimsBySerial(
-            @PathVariable String serial
-    ) {
+    public ResponseEntity<List<WarrantyClaimRecord>> getClaimsBySerial(
+            @PathVariable String serial) {
+
         return ResponseEntity.ok(
                 claimService.getClaimsBySerial(serial)
         );

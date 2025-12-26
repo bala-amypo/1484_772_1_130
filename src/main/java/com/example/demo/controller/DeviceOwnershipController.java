@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,33 +19,39 @@ public class DeviceOwnershipController {
         this.deviceService = deviceService;
     }
 
+    // ✅ CREATE DEVICE
     @PostMapping
-    public ResponseEntity<?> registerDevice(
-            @RequestBody DeviceOwnershipRecord record
-    ) {
-        return ResponseEntity.status(201)
+    public ResponseEntity<DeviceOwnershipRecord> registerDevice(
+            @RequestBody DeviceOwnershipRecord record) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(deviceService.registerDevice(record));
     }
 
+    // ✅ GET ALL DEVICES
     @GetMapping
-    public ResponseEntity<?> getAllDevices() {
+    public ResponseEntity<List<DeviceOwnershipRecord>> getAllDevices() {
         return ResponseEntity.ok(deviceService.getAllDevices());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> updateDeviceStatus(
+    // ✅ UPDATE STATUS (MUST BE PUT, NOT GET)
+    @PutMapping("/{id}/status")
+    public ResponseEntity<DeviceOwnershipRecord> updateDeviceStatus(
             @PathVariable Long id,
-            @RequestParam boolean active
-    ) {
+            @RequestParam boolean active) {
+
         return ResponseEntity.ok(
                 deviceService.updateDeviceStatus(id, active)
         );
     }
 
+    // ✅ GET BY SERIAL (NO OPTIONAL LEAK)
     @GetMapping("/serial/{serial}")
-    public ResponseEntity<?> getBySerial(
-            @PathVariable String serial
-    ) {
-        return ResponseEntity.ok(deviceService.getBySerial(serial));
+    public ResponseEntity<DeviceOwnershipRecord> getBySerial(
+            @PathVariable String serial) {
+
+        return deviceService.getBySerial(serial)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
