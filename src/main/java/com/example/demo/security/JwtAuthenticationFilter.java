@@ -46,10 +46,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                if (!jwtTokenProvider.validateToken(token)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
-                }
+                // if (!jwtTokenProvider.validateToken(token)) {
+                //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                //     return;
+                // }
 
                 String email = jwtTokenProvider.getEmail(token);
 
