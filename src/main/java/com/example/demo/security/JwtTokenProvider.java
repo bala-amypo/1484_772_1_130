@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -52,7 +54,10 @@ public class JwtTokenProvider {
 
     @SuppressWarnings("unchecked")
     public Set<String> getRoles(String token) {
-        return parseToken(token).get("roles", Set.class);
+        List<String> roles =
+                parseToken(token).get("roles", List.class);
+
+        return new HashSet<>(roles);
     }
 
     public Long getUserId(String token) {
