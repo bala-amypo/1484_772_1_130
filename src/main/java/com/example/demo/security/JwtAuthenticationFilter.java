@@ -32,6 +32,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // 🚫 Do NOT apply JWT filter to auth & swagger endpoints
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/auth")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui.html");
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -46,13 +56,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                // if (!jwtTokenProvider.validateToken(token)) {
-                //     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                //     return;
-                // }
+                // ✅ Validate JWT
+                if (!jwtTokenProvider.validateToken(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
 
+                // ✅ Extract user
                 String email = jwtTokenProvider.getEmail(token);
 
+                // ✅ Map roles → authorities
                 List<SimpleGrantedAuthority> authorities =
                         jwtTokenProvider.getRoles(token).stream()
                                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
@@ -73,6 +86,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
