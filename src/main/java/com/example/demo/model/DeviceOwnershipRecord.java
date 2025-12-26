@@ -1,24 +1,34 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "device_ownership_record")
 public class DeviceOwnershipRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String serialNumber;
 
+    @Column(nullable = false)
     private String ownerName;
+
+    @Column(nullable = false)
     private String ownerEmail;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate warrantyExpiration;
+
     private Boolean active = true;
 
-    /* ===== BUILDER ===== */
+    public DeviceOwnershipRecord() {}
+
+    /* ===== BUILDER (TEST REQUIRED) ===== */
     public static Builder builder() {
         return new Builder();
     }
@@ -36,7 +46,7 @@ public class DeviceOwnershipRecord {
         public DeviceOwnershipRecord build() { return d; }
     }
 
-    /* ===== GETTERS / SETTERS ===== */
+    /* ===== GETTERS / SETTERS (MANDATORY) ===== */
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -44,9 +54,15 @@ public class DeviceOwnershipRecord {
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }
 
     public String getOwnerName() { return ownerName; }
+    public void setOwnerName(String ownerName) { this.ownerName = ownerName; }
+
     public String getOwnerEmail() { return ownerEmail; }
+    public void setOwnerEmail(String ownerEmail) { this.ownerEmail = ownerEmail; }
 
     public LocalDate getWarrantyExpiration() { return warrantyExpiration; }
+    public void setWarrantyExpiration(LocalDate warrantyExpiration) {
+        this.warrantyExpiration = warrantyExpiration;
+    }
 
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
