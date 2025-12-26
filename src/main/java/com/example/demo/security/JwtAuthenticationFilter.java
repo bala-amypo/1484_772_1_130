@@ -79,7 +79,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Set;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -90,13 +94,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // Constructor needed for tests
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
-            CustomUserDetailsService customUserDetailsService
+            CustomUserDetailsService uds
     ) {
         this.jwtTokenProvider = jwtTokenProvider;
-        // customUserDetailsService is NOT needed for logic
-        // kept only for test compatibility
     }
 
     @Override
@@ -115,6 +118,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
+
+            Set<SimpleGrantedAuthority> authorities =
+                    jwtTokenProvider.getRoles(token).stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(java.util.stream.Collectors.toSet());
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            jwtTokenProvider.getEmail(token),
+                            null,
+                            authorities
+                    );
+
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
