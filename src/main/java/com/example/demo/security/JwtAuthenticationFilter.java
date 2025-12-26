@@ -56,9 +56,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                // ✅ Validate token
-                if (jwtTokenProvider.validateToken(token)) {
+                // ✅ ALWAYS call validateToken (required for test)
+                boolean valid = jwtTokenProvider.validateToken(token);
 
+                if (valid) {
                     String email = jwtTokenProvider.getEmail(token);
 
                     List<SimpleGrantedAuthority> authorities =
@@ -81,7 +82,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .setAuthentication(authentication);
                 }
             } catch (Exception e) {
-                // ❌ Do NOT send response here
                 SecurityContextHolder.clearContext();
             }
         }
@@ -90,7 +90,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
 
 
 
