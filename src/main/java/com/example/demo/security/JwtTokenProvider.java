@@ -14,13 +14,13 @@ public class JwtTokenProvider {
     private final Key key =
             Keys.hmacShaKeyFor("jwt-secret-key-demo-1234567890123456".getBytes());
 
-    private final long validity = 1000 * 60 * 60;
+    private final long validity = 1000 * 60 * 60; // 1 hour
 
     public String createToken(Long userId, String email, Set<String> roles) {
 
         return Jwts.builder()
-                .setSubject(email)               
-                .claim("userId", userId)         
+                .setSubject(email)
+                .claim("userId", userId)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + validity))
@@ -35,10 +35,30 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+
+    public boolean validateToken(String token) {
+        try {
+            parseToken(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public String getEmail(String token) {
+        return parseToken(token).getSubject();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<String> getRoles(String token) {
+        return parseToken(token).get("roles", Set.class);
+    }
+
+    public Long getUserId(String token) {
+        return parseToken(token).get("userId", Long.class);
+    }
 }
-
-
-
 
 
 

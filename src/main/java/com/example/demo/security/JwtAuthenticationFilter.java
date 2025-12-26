@@ -17,8 +17,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // ✅ REQUIRED CONSTRUCTOR
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    public JwtAuthenticationFilter(
+            JwtTokenProvider jwtTokenProvider,
+            Object customUserDetailsService
+    ) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -59,9 +65,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
-
-
 
 
 
