@@ -1,7 +1,6 @@
 package com.example.demo.service.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -13,35 +12,39 @@ import com.example.demo.service.DeviceOwnershipService;
 @Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
 
-    private final DeviceOwnershipRecordRepository deviceRepo;
+    private final DeviceOwnershipRecordRepository repository;
 
-    public DeviceOwnershipServiceImpl(DeviceOwnershipRecordRepository deviceRepo) {
-        this.deviceRepo = deviceRepo;
+    public DeviceOwnershipServiceImpl(DeviceOwnershipRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public DeviceOwnershipRecord registerDevice(DeviceOwnershipRecord device) {
-        if (deviceRepo.existsBySerialNumber(device.getSerialNumber())) {
-            throw new IllegalArgumentException("Duplicate serial number");
+
+        if (repository.existsBySerialNumber(device.getSerialNumber())) {
+            throw new RuntimeException("Device already exists with this serial number");
         }
-        return deviceRepo.save(device);
+
+        return repository.save(device);
     }
 
     @Override
     public Optional<DeviceOwnershipRecord> getBySerial(String serial) {
-        return deviceRepo.findBySerialNumber(serial);
+        return repository.findBySerialNumber(serial);
     }
 
     @Override
     public List<DeviceOwnershipRecord> getAllDevices() {
-        return deviceRepo.findAll();
+        return repository.findAll();
     }
 
     @Override
     public DeviceOwnershipRecord updateDeviceStatus(Long id, boolean active) {
-        DeviceOwnershipRecord record = deviceRepo.findById(id)
-                .orElseThrow(NoSuchElementException::new);
-        record.setActive(active);
-        return deviceRepo.save(record);
+
+        DeviceOwnershipRecord device = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Device not found with id: " + id));
+
+        device.setActive(active);
+        return repository.save(device); 
     }
 }
