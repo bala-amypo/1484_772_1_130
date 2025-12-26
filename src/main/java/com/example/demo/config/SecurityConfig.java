@@ -53,7 +53,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
 
-            // ✅ THIS LINE IS THE KEY FIX
             .addFilterBefore(
                 new JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter.class
