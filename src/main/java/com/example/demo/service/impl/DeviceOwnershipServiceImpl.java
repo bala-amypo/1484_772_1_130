@@ -13,44 +13,35 @@ import com.example.demo.service.DeviceOwnershipService;
 @Service
 public class DeviceOwnershipServiceImpl implements DeviceOwnershipService {
 
-    private final DeviceOwnershipRecordRepository repository;
+    private final DeviceOwnershipRecordRepository deviceRepo;
 
-    public DeviceOwnershipServiceImpl(DeviceOwnershipRecordRepository repository) {
-        this.repository = repository;
+    public DeviceOwnershipServiceImpl(DeviceOwnershipRecordRepository deviceRepo) {
+        this.deviceRepo = deviceRepo;
     }
 
     @Override
     public DeviceOwnershipRecord registerDevice(DeviceOwnershipRecord device) {
-
-        if (repository.existsBySerialNumber(device.getSerialNumber())) {
-            // ✅ FIX #1: expected by test7
-            throw new IllegalArgumentException(
-                    "Device already exists with this serial number");
+        if (deviceRepo.existsBySerialNumber(device.getSerialNumber())) {
+            throw new IllegalArgumentException("Duplicate serial number");
         }
-
-        return repository.save(device);
+        return deviceRepo.save(device);
     }
 
     @Override
     public Optional<DeviceOwnershipRecord> getBySerial(String serial) {
-        return repository.findBySerialNumber(serial);
+        return deviceRepo.findBySerialNumber(serial);
     }
 
     @Override
     public List<DeviceOwnershipRecord> getAllDevices() {
-        return repository.findAll();
+        return deviceRepo.findAll();
     }
 
     @Override
     public DeviceOwnershipRecord updateDeviceStatus(Long id, boolean active) {
-
-        DeviceOwnershipRecord device = repository.findById(id)
-                // ✅ FIX #2: expected by test11
-                .orElseThrow(() ->
-                        new NoSuchElementException(
-                                "Device not found with id: " + id));
-
-        device.setActive(active);
-        return repository.save(device);
+        DeviceOwnershipRecord record = deviceRepo.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+        record.setActive(active);
+        return deviceRepo.save(record);
     }
 }
