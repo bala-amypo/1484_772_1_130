@@ -46,7 +46,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 // Server
                 .servers(List.of(
-                        new Server().url("https://9063.pro604cr.amypo.ai/")
+                        new Server().url("https://9008.pro604cr.amypo.ai/")
                 ))
                 // JWT Security
                 .components(new Components()
