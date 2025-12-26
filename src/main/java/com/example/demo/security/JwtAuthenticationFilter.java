@@ -1,69 +1,116 @@
 package com.example.demo.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.Set;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.util.List;
+
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    public JwtAuthenticationFilter(
-            JwtTokenProvider jwtTokenProvider,
-            CustomUserDetailsService uds
-    ) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
-    ) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) {
 
-        String header = request.getHeader("Authorization");
+        try {
+            String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+            if (header != null && header.startsWith("Bearer ")) {
+                String token = header.substring(7);
+                String email = JwtUtil.extractEmail(token);
 
-            if (!jwtTokenProvider.validateToken(token)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(email, null, List.of());
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
 
-            Set<SimpleGrantedAuthority> authorities =
-                    jwtTokenProvider.getRoles(token).stream()
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(java.util.stream.Collectors.toSet());
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            jwtTokenProvider.getEmail(token),
-                            null,
-                            authorities
-                    );
-
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-
-        filterChain.doFilter(request, response);
     }
 }
+
+
+
+
+
+
+
+
+
+//          -------MAIN BACKUP!!!!------
+// package com.example.demo.security;
+
+// import jakarta.servlet.FilterChain;
+// import jakarta.servlet.ServletException;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
+
+// import java.io.IOException;
+// import java.util.Set;
+
+// import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+// import org.springframework.security.core.authority.SimpleGrantedAuthority;
+// import org.springframework.security.core.context.SecurityContextHolder;
+// import org.springframework.web.filter.OncePerRequestFilter;
+
+// public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+//     private final JwtTokenProvider jwtTokenProvider;
+
+//     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+//         this.jwtTokenProvider = jwtTokenProvider;
+//     }
+
+//     public JwtAuthenticationFilter(
+//             JwtTokenProvider jwtTokenProvider,
+//             CustomUserDetailsService uds
+//     ) {
+//         this.jwtTokenProvider = jwtTokenProvider;
+//     }
+
+//     @Override
+//     protected void doFilterInternal(
+//             HttpServletRequest request,
+//             HttpServletResponse response,
+//             FilterChain filterChain
+//     ) throws ServletException, IOException {
+
+//         String header = request.getHeader("Authorization");
+
+//         if (header != null && header.startsWith("Bearer ")) {
+//             String token = header.substring(7);
+
+//             if (!jwtTokenProvider.validateToken(token)) {
+//                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                 return;
+//             }
+
+//             Set<SimpleGrantedAuthority> authorities =
+//                     jwtTokenProvider.getRoles(token).stream()
+//                             .map(SimpleGrantedAuthority::new)
+//                             .collect(java.util.stream.Collectors.toSet());
+
+//             UsernamePasswordAuthenticationToken authentication =
+//                     new UsernamePasswordAuthenticationToken(
+//                             jwtTokenProvider.getEmail(token),
+//                             null,
+//                             authorities
+//                     );
+
+//             SecurityContextHolder.getContext()
+//                     .setAuthentication(authentication);
+//         }
+
+//         filterChain.doFilter(request, response);
+//     }
+// }
 
 
 
