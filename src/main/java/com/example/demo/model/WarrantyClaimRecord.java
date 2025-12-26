@@ -44,58 +44,55 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "warranty_claims")
 public class WarrantyClaimRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String claimReason;
-    private String status;
-    private LocalDate claimDate;
+    private String serialNumber;
 
-    // CLAIM → DEVICE (Many to One)
+    private String claimReason;
+
+    private String status = "PENDING";
+
     @ManyToOne
     @JoinColumn(name = "device_id", nullable = false)
     private DeviceOwnershipRecord device;
 
-    // -------- Getters and Setters --------
+    public static Builder builder() {
+        return new Builder();
+    }
 
-    public Long getId() {
-        return id;
+    public static class Builder {
+        private final WarrantyClaimRecord c = new WarrantyClaimRecord();
+
+        public Builder id(Long id) { c.id = id; return this; }
+        public Builder serialNumber(String s) { c.serialNumber = s; return this; }
+        public Builder claimReason(String r) { c.claimReason = r; return this; }
+        public Builder status(String s) { c.status = s; return this; }
+
+        public WarrantyClaimRecord build() { return c; }
     }
- 
-    public void setId(Long id) {
-        this.id = id;
+
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getSerialNumber() { return serialNumber; }
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
- 
-    public String getClaimReason() {
-        return claimReason;
-    }
- 
+
+    public String getClaimReason() { return claimReason; }
     public void setClaimReason(String claimReason) {
         this.claimReason = claimReason;
     }
- 
-    public String getStatus() {
-        return status;
-    }
- 
-    public void setStatus(String status) {
-        this.status = status;
-    }
- 
-    public LocalDate getClaimDate() {
-        return claimDate;
-    }
- 
-    public void setClaimDate(LocalDate claimDate) {
-        this.claimDate = claimDate;
-    }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public DeviceOwnershipRecord getDevice() {
         return device;
