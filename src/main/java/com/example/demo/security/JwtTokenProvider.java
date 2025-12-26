@@ -13,11 +13,13 @@ import java.util.Set;
 @Component
 public class JwtTokenProvider {
 
+    // 🔐 SAME KEY USED FOR CREATE + VALIDATE
     private final Key key =
             Keys.hmacShaKeyFor("jwt-secret-key-demo-1234567890123456".getBytes());
 
     private final long validity = 1000 * 60 * 60; // 1 hour
 
+    // ---------- CREATE TOKEN ----------
     public String createToken(Long userId, String email, Set<String> roles) {
 
         return Jwts.builder()
@@ -30,6 +32,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    // ---------- PARSE TOKEN ----------
     public Claims parseToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -38,7 +41,7 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-
+    // ---------- VALIDATE TOKEN ----------
     public boolean validateToken(String token) {
         try {
             parseToken(token);
@@ -48,15 +51,14 @@ public class JwtTokenProvider {
         }
     }
 
+    // ---------- METHODS REQUIRED BY TESTS ----------
     public String getEmail(String token) {
         return parseToken(token).getSubject();
     }
 
     @SuppressWarnings("unchecked")
     public Set<String> getRoles(String token) {
-        List<String> roles =
-                parseToken(token).get("roles", List.class);
-
+        List<String> roles = parseToken(token).get("roles", List.class);
         return new HashSet<>(roles);
     }
 

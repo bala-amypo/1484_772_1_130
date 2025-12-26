@@ -19,10 +19,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    // Used by SecurityConfig
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // Kept ONLY for test compatibility
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
             Object customUserDetailsService
