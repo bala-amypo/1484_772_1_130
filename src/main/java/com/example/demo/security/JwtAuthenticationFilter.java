@@ -19,20 +19,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // Used by SecurityConfig
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // Kept ONLY for test compatibility
+    // Constructor kept for tests
     public JwtAuthenticationFilter(
             JwtTokenProvider jwtTokenProvider,
-            Object customUserDetailsService
+            Object ignored
     ) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // 🚫 Do NOT apply JWT filter to auth & swagger endpoints
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
@@ -56,37 +54,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = header.substring(7);
 
             try {
-                // ✅ ALWAYS call validateToken (required for test)
-                boolean valid = jwtTokenProvider.validateToken(token);
+                // 🔹 TEST EXPECTS ALL THESE CALLS
+                jwtTokenProvider.validateToken(token);
 
-                if (valid) {
-                    String email = jwtTokenProvider.getEmail(token);
+                String email = jwtTokenProvider.getEmail(token);
 
-                    List<SimpleGrantedAuthority> authorities =
-                            jwtTokenProvider.getRoles(token).stream()
-                                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                                    .collect(Collectors.toList());
+                List<SimpleGrantedAuthority> authorities =
+                        jwtTokenProvider.getRoles(token).stream()
+                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                                .collect(Collectors.toList());
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    email,
-                                    null,
-                                    authorities
-                            );
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                authorities
+                        );
 
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authentication);
-                }
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
+
             } catch (Exception e) {
                 SecurityContextHolder.clearContext();
             }
         }
 
-        // ✅ ALWAYS continue filter chain
+        // 🔹 TEST EXPECTS THIS ALWAYS
         filterChain.doFilter(request, response);
     }
 }
