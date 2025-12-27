@@ -19,7 +19,6 @@ public class DeviceOwnershipController {
         this.deviceService = deviceService;
     }
 
-    // ✅ CREATE DEVICE
     @PostMapping
     public ResponseEntity<DeviceOwnershipRecord> registerDevice(
             @RequestBody DeviceOwnershipRecord record) {
@@ -28,7 +27,6 @@ public class DeviceOwnershipController {
                 .body(deviceService.registerDevice(record));
     }
 
-    // ✅ GET ALL DEVICES
     @GetMapping
     public ResponseEntity<List<DeviceOwnershipRecord>> getAllDevices() {
         return ResponseEntity.ok(deviceService.getAllDevices());
